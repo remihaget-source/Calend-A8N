@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argos — Event Calendar 2026–2027</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0f0f0f; --paper: #f7f6f2; --rule: #d8d5cc;
+    --accent: #c84b2f; --accent-soft: #f5e8e5;
+    --tier1: #c84b2f; --tier2: #d97c2a;
+    --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  }
+  body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 13px; line-height: 1.5; padding: 36px 28px; margin: 0 auto; }
+
+  .header { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 20px 0 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  h1 { font-size: 24px; font-weight: 600; letter-spacing: -.03em; line-height: 1.1; }
+  .subline { font-size: 11px; color: #666; margin-top: 3px; }
+  .header-right { text-align: right; font-family: var(--mono); font-size: 10px; color: #888; line-height: 1.9; white-space: nowrap; }
+
+  .save-bar { background: #eef2ea; border: 1px solid #bfcdb8; border-radius: 4px; padding: 8px 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: #4a6e42; }
+  .save-bar span { opacity: 0.7; }
+  .save-status { font-weight: 500; transition: opacity .3s; }
+
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--rule); align-items: center; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; font-family: var(--mono); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot.high { background: var(--tier1); } .dot.med { background: var(--tier2); }
+
+  .year-div { background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; padding: 5px 10px; margin: 16px 0 0; display: inline-block; }
+  .month-row td { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #bbb; padding: 10px 0 4px; border-top: 1px solid var(--rule); }
+
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  col.c-date  { width: 96px; }
+  col.c-flag  { width: 30px; }
+  col.c-event { width: auto; }
+  col.c-aud   { width: 96px; }
+  col.c-pri   { width: 88px; }
+  col.c-att   { width: 148px; }
+  col.c-con   { width: 210px; }
+
+  thead th { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: #aaa; padding: 6px 8px 6px 0; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: bottom; }
+  thead th:first-child { padding-left: 0; }
+
+  tbody tr { border-bottom: 1px solid var(--rule); transition: background .12s; }
+  tbody tr:hover { background: #f0ede6; }
+  tbody tr.month-row { border-bottom: none; }
+  tbody tr.year-row td { padding: 0; border: none; }
+
+  td { padding: 10px 8px 10px 0; vertical-align: middle; }
+  td:last-child { padding-right: 0; }
+
+  .td-date { font-family: var(--mono); font-size: 10px; color: #888; white-space: nowrap; }
+  .td-flag { font-size: 17px; text-align: center; padding-right: 4px; }
+  .td-event { border-left: 1px solid var(--rule); padding-left: 12px; }
+  .ev-name { font-weight: 600; font-size: 13px; letter-spacing: -.01em; margin-bottom: 3px; }
+  .ev-meta { font-size: 10.5px; color: #666; display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+  .tag { font-family: var(--mono); font-size: 9px; padding: 1px 5px; border-radius: 2px; background: #e8e5de; color: #555; white-space: nowrap; }
+  .tag.new { background: #e8f0e5; color: #4a6e42; border: 1px solid #bfcdb8; }
+
+  .td-aud { font-family: var(--mono); font-size: 9.5px; color: #777; line-height: 1.5; border-left: 1px solid var(--rule); padding-left: 8px; }
+
+  .td-pri { border-left: 1px solid var(--rule); padding-left: 8px; }
+  .ptoggle { display: flex; border-radius: 3px; overflow: hidden; border: 1px solid var(--rule); }
+  .ptoggle button { flex: 1; border: none; background: #ece9e2; color: #bbb; padding: 5px 0; cursor: pointer; font-family: var(--mono); font-size: 10px; font-weight: 500; transition: all .13s; }
+  .ptoggle button:first-child { border-right: 1px solid var(--rule); }
+  .ptoggle button.ah { background: var(--accent-soft); color: var(--tier1); }
+  .ptoggle button.am { background: #fdf2e6; color: var(--tier2); }
+  .ptoggle button:hover:not(.ah):not(.am) { background: #dedad3; color: #555; }
+
+  .td-att { border-left: 1px solid var(--rule); padding-left: 8px; vertical-align: middle; }
+  .att-input { width: 100%; border: 1px solid transparent; background: transparent; font-family: var(--sans); font-size: 11px; color: var(--ink); padding: 3px 4px; border-radius: 2px; resize: none; outline: none; line-height: 1.4; min-height: 30px; transition: border-color .13s, background .13s; }
+  .att-input::placeholder { color: #ccc; font-style: italic; }
+  .att-input:focus { border-color: var(--rule); background: #fff; }
+
+  .td-con { border-left: 1px solid var(--rule); padding-left: 8px; vertical-align: top; padding-top: 11px; }
+  .con-name { font-size: 11px; font-weight: 600; color: var(--ink); margin-bottom: 1px; }
+  .con-role { font-family: var(--mono); font-size: 9px; color: #999; margin-bottom: 2px; }
+  .con-email { font-family: var(--mono); font-size: 9px; color: var(--accent); word-break: break-all; }
+
+  .summary { margin-top: 28px; border-top: 3px solid var(--ink); display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--rule); }
+  .s-cell { background: var(--paper); padding: 14px; }
+  .s-num { font-family: var(--mono); font-size: 24px; font-weight: 500; letter-spacing: -.04em; line-height: 1; margin-bottom: 3px; }
+  .s-lbl { font-size: 10px; color: #888; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="eyebrow">Argos Intelligence — Conference Strategy</div>
+    <h1>Event Calendar 2026 – 2027</h1>
+    <div class="subline">Mid-June 2026 → March 2027 &nbsp;·&nbsp; GP / LP / CVC / SWF &nbsp;·&nbsp; Edits auto-saved to this device</div>
+  </div>
+  <div class="header-right">Updated June 2026<br>17 events · 12 countries<br>Named program directors included</div>
+</div>
+
+<div class="save-bar">
+  <span>✦ Priority toggles and attendee notes are saved automatically to this browser</span>
+  <span class="save-status" id="saveStatus">All changes saved</span>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot high"></div>High priority</div>
+  <div class="legend-item"><div class="dot med"></div>Medium priority</div>
+  <span style="font-family:var(--mono);font-size:10px;color:#aaa;margin-left:10px;">★ = new from your list &nbsp;·&nbsp; Contact = program / speaker director</span>
+</div>
+
+<table>
+  <colgroup>
+    <col class="c-date"><col class="c-flag"><col class="c-event">
+    <col class="c-aud"><col class="c-pri"><col class="c-att"><col class="c-con">
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Date</th><th></th><th style="padding-left:12px;">Event</th>
+      <th style="padding-left:8px;">Audience</th>
+      <th style="padding-left:8px;">Priority</th>
+      <th style="padding-left:8px;">Attendees</th>
+      <th style="padding-left:8px;">Program Director</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr class="year-row"><td colspan="7"><span class="year-div">2026</span></td></tr>
+    <tr class="month-row"><td colspan="7">June</td></tr>
+
+    <tr data-id="jun-pe-swiss">
+      <td class="td-date">Jun 18</td><td class="td-flag">🇨🇭</td>
+      <td class="td-event"><div class="ev-name">Private Equity Insights Switzerland</div><div class="ev-meta"><span>Switzerland</span><span class="tag new">★</span><span class="tag">PE · VC</span></div></td>
+      <td class="td-aud">GP · LP<br>DACH</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">PE Insights Team</div><div class="con-role">Speaking submissions</div><div class="con-email">speaker@privateequityinsights.com</div></td>
+    </tr>
+
+    <tr data-id="jun-mupet">
+      <td class="td-date">Jun 24</td><td class="td-flag">🇪🇺</td>
+      <td class="td-event"><div class="ev-name">MUPET 2026</div><div class="ev-meta"><span>Europe</span><span class="tag new">★</span><span class="tag">Academic · PE Research</span></div></td>
+      <td class="td-aud">GP · Academic<br>PE research</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">MUPET Organizers</div><div class="con-role">Academic program committee</div><div class="con-email">mupet@privatecapitalresearch.org</div></td>
+    </tr>
+
+    <tr class="month-row"><td colspan="7">July</td></tr>
+
+    <tr data-id="jul-pei-chicago">
+      <td class="td-date">Jul 13–15</td><td class="td-flag">🇺🇸</td>
+      <td class="td-event"><div class="ev-name">PEI Private Equity Forum Chicago</div><div class="ev-meta"><span>Chicago, USA</span><span class="tag">Mid-Market PE</span><span class="tag">400+</span></div></td>
+      <td class="td-aud">GP · LP<br>Mid-market</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">PEI Events Team</div><div class="con-role">Speaking / sponsorship</div><div class="con-email">events@peimedia.com</div></td>
+    </tr>
+
+    <tr class="month-row"><td colspan="7">September</td></tr>
+
+    <tr data-id="sep-ipem">
+      <td class="td-date">Sep 8–10</td><td class="td-flag">🇫🇷</td>
+      <td class="td-event"><div class="ev-name">IPEM Global 2026</div><div class="ev-meta"><span>Paris — Palais des Congrès</span><span class="tag">6,000+</span><span class="tag">1,600+ LPs</span></div></td>
+      <td class="td-aud">GP · LP · CVC<br>Global</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">IPEM Content Team</div><div class="con-role">Speaker application online</div><div class="con-email">contact@ipem-market.com</div></td>
+    </tr>
+
+    <tr data-id="sep-bvca">
+      <td class="td-date">Sep 9–10</td><td class="td-flag">🇬🇧</td>
+      <td class="td-event"><div class="ev-name">BVCA Summit 2026</div><div class="ev-meta"><span>London — Sancroft St Paul's</span><span class="tag">1,000+</span><span class="tag">UK PE/VC</span></div></td>
+      <td class="td-aud">GP · LP<br>UK-focused</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">Abigail Jaggers</div><div class="con-role">Events, UK Private Capital</div><div class="con-email">events@ukprivatecapital.co.uk</div></td>
+    </tr>
+
+    <tr data-id="sep-sr-uswest">
+      <td class="td-date">Sep 14–15</td><td class="td-flag">🇺🇸</td>
+      <td class="td-event"><div class="ev-name">SuperReturn US West</div><div class="ev-meta"><span>Los Angeles, USA</span><span class="tag">~400</span><span class="tag">Deep Tech LP/GP</span></div></td>
+      <td class="td-aud">GP · LP<br>West Coast · Tech</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">Michaela Virtue</div><div class="con-role">Conference Director, SuperReturn</div><div class="con-email">michaela.virtue@informa.com</div></td>
+    </tr>
+
+    <tr data-id="sep-pe-europe-forum">
+      <td class="td-date">Sep 15–16</td><td class="td-flag">🇬🇧</td>
+      <td class="td-event"><div class="ev-name">9th Private Equity Europe Forum</div><div class="ev-meta"><span>London, UK</span><span class="tag new">★</span><span class="tag">European PE</span></div></td>
+      <td class="td-aud">GP · LP<br>European PE</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">C5 Group Events</div><div class="con-role">Program / speaking</div><div class="con-email">info@americanconference.com</div></td>
+    </tr>
+
+    <tr data-id="sep-pemacom">
+      <td class="td-date">Sep 22</td><td class="td-flag">🇪🇺</td>
+      <td class="td-event"><div class="ev-name">pemacom 2026</div><div class="ev-meta"><span>Europe</span><span class="tag new">★</span><span class="tag">PE · Marketing · IR</span></div></td>
+      <td class="td-aud">GP · IR teams<br>PE marketing</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">pemacom Team</div><div class="con-role">Speaking / program</div><div class="con-email">hello@pemacom.com</div></td>
+    </tr>
+
+    <tr data-id="sep-dach">
+      <td class="td-date">Sep 25</td><td class="td-flag">🇩🇪</td>
+      <td class="td-event"><div class="ev-name">DACH Private Equity Conference</div><div class="ev-meta"><span>Munich, Germany</span><span class="tag new">★</span><span class="tag">DACH region</span></div></td>
+      <td class="td-aud">GP · LP<br>DACH · Mid-market</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">DACH PE Organizers</div><div class="con-role">Speaking / sponsorship</div><div class="con-email">info@dachpeconference.com</div></td>
+    </tr>
+
+    <tr data-id="sep-sr-asia">
+      <td class="td-date">Sep 28–Oct 1</td><td class="td-flag">🇸🇬</td>
+      <td class="td-event"><div class="ev-name">SuperReturn Asia 2026</div><div class="ev-meta"><span>Singapore — Marina Bay Sands</span><span class="tag">2,500+</span><span class="tag">1,200+ LPs</span><span class="tag">AI &amp; Deep Tech Summit</span></div></td>
+      <td class="td-aud">GP · LP · SWF<br>APAC · Global</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">Mohamed El Mofty</div><div class="con-role">Speaking, SuperReturn Asia</div><div class="con-email">mohamed.elmofty@informa.com</div></td>
+    </tr>
+
+    <tr class="month-row"><td colspan="7">October</td></tr>
+
+    <tr data-id="oct-uk-pe">
+      <td class="td-date">Oct 6</td><td class="td-flag">🇬🇧</td>
+      <td class="td-event"><div class="ev-name">UK Private Equity Conference</div><div class="ev-meta"><span>London, UK</span><span class="tag new">★</span><span class="tag">UK PE</span></div></td>
+      <td class="td-aud">GP · LP<br>UK-focused</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">Abigail Jaggers</div><div class="con-role">Events, UK Private Capital</div><div class="con-email">events@ukprivatecapital.co.uk</div></td>
+    </tr>
+
+    <tr data-id="oct-apex">
+      <td class="td-date">Oct 6–7</td><td class="td-flag">🇨🇭</td>
+      <td class="td-event"><div class="ev-name">Apex Invest Europe 2026</div><div class="ev-meta"><span>Zurich, Switzerland</span><span class="tag new">★</span><span class="tag">European PE · VC</span></div></td>
+      <td class="td-aud">GP · LP<br>DACH · European</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">Apex Invest Team</div><div class="con-role">Speaker / program</div><div class="con-email">program@apexinvest.ch</div></td>
+    </tr>
+
+    <tr data-id="oct-aima">
+      <td class="td-date">Oct 14–15</td><td class="td-flag">🇨🇦</td>
+      <td class="td-event"><div class="ev-name">AIMA Global Investor Forum</div><div class="ev-meta"><span>Toronto — Ritz-Carlton</span><span class="tag">500+</span><span class="tag">Institutional allocators</span></div></td>
+      <td class="td-aud">LP · CIO<br>Endowments · Pensions</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">AIMA Canada Events</div><div class="con-role">Program / speaking</div><div class="con-email">events@aima.org</div></td>
+    </tr>
+
+    <tr data-id="oct-sr-me">
+      <td class="td-date">Oct 20–22</td><td class="td-flag">🇦🇪</td>
+      <td class="td-event"><div class="ev-name">SuperReturn Middle East</div><div class="ev-meta"><span>Dubai — Ritz-Carlton DIFC</span><span class="tag new">★</span><span class="tag">600+</span><span class="tag">220+ LPs · SWF · PIF</span></div></td>
+      <td class="td-aud">GP · LP · SWF<br>MENA · Regional Gov</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">Marcia Brissett</div><div class="con-role">Sponsorship, SuperReturn ME</div><div class="con-email">marcia.brissett@informa.com</div></td>
+    </tr>
+
+    <tr class="month-row"><td colspan="7">November</td></tr>
+
+    <tr data-id="nov-ilpa">
+      <td class="td-date">Nov 3–5</td><td class="td-flag">🇺🇸</td>
+      <td class="td-event"><div class="ev-name">ILPA Summit New York</div><div class="ev-meta"><span>New York, USA</span><span class="tag">Invite-only</span><span class="tag">LP-curated GP roster</span></div></td>
+      <td class="td-aud">GP · LP<br>Institutional LPs</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">ILPA Events Team</div><div class="con-role">Summit + sponsorship</div><div class="con-email">events@ilpa.org</div></td>
+    </tr>
+
+    <tr data-id="nov-sr-europe">
+      <td class="td-date">Nov 4–7</td><td class="td-flag">🇳🇱</td>
+      <td class="td-event"><div class="ev-name">SuperReturn Europe</div><div class="ev-meta"><span>Amsterdam — Hotel Okura</span><span class="tag">500+ LPs · 50 countries</span><span class="tag">SWF · Pension · FO</span></div></td>
+      <td class="td-aud">GP · LP · SWF<br>Pan-European</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">Hannah Postlethwaite</div><div class="con-role">Sponsorship, SuperReturn Europe</div><div class="con-email">hannah.postlethwaite@informa.com</div></td>
+    </tr>
+
+    <tr data-id="nov-sr-secondaries">
+      <td class="td-date">Nov 17–18</td><td class="td-flag">🇺🇸</td>
+      <td class="td-event"><div class="ev-name">SuperReturn Secondaries North America</div><div class="ev-meta"><span>USA</span><span class="tag new">★</span><span class="tag">Secondaries · Liquidity</span></div></td>
+      <td class="td-aud">GP · LP<br>Secondaries focus</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">Michaela Virtue</div><div class="con-role">Conference Director, SuperReturn</div><div class="con-email">michaela.virtue@informa.com</div></td>
+    </tr>
+
+    <tr data-id="nov-pex">
+      <td class="td-date">Nov 18–19</td><td class="td-flag">🇪🇺</td>
+      <td class="td-event"><div class="ev-name">Private Equity Exchange (PEX) 2026</div><div class="ev-meta"><span>Europe</span><span class="tag new">★</span><span class="tag">PE · VC · LP/GP</span></div></td>
+      <td class="td-aud">GP · LP<br>European PE</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">PEX Organizing Team</div><div class="con-role">Speaking / program</div><div class="con-email">contact@pe-exchange.com</div></td>
+    </tr>
+
+    <tr class="year-row"><td colspan="7"><span class="year-div">2027</span></td></tr>
+    <tr class="month-row"><td colspan="7">February</td></tr>
+
+    <tr data-id="feb-ipem-wealth">
+      <td class="td-date">Feb 2–4</td><td class="td-flag">🇫🇷</td>
+      <td class="td-event"><div class="ev-name">IPEM Wealth 2027</div><div class="ev-meta"><span>Cannes — Palais des Festivals</span><span class="tag">3,500+</span><span class="tag">Family Office · Private Bank</span></div></td>
+      <td class="td-aud">FO · Private Bank<br>Wealth allocators</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">IPEM Content Team</div><div class="con-role">Speaker app: ipem-market.com</div><div class="con-email">contact@ipem-market.com</div></td>
+    </tr>
+
+    <tr class="month-row"><td colspan="7">March</td></tr>
+
+    <tr data-id="mar-sr-na">
+      <td class="td-date">Mar 2027 TBC</td><td class="td-flag">🇺🇸</td>
+      <td class="td-event"><div class="ev-name">SuperReturn North America 2027</div><div class="ev-meta"><span>Miami — InterContinental</span><span class="tag">800+</span><span class="tag">250+ LPs · 350+ GPs</span><span class="tag">Sponsorship open</span></div></td>
+      <td class="td-aud">GP · LP<br>North America</td>
+      <td class="td-pri"><div class="ptoggle"><button onclick="tog(this,'H')">H</button><button onclick="tog(this,'M')">M</button></div></td>
+      <td class="td-att"><textarea class="att-input" placeholder="Add names…" rows="1"></textarea></td>
+      <td class="td-con"><div class="con-name">Michaela Virtue</div><div class="con-role">Conference Director, SuperReturn</div><div class="con-email">michaela.virtue@informa.com</div></td>
+    </tr>
+
+  </tbody>
+</table>
+
+<div class="summary">
+  <div class="s-cell"><div class="s-num">17</div><div class="s-lbl">Events mapped</div></div>
+  <div class="s-cell"><div class="s-num" id="highCount">0</div><div class="s-lbl">Marked high</div></div>
+  <div class="s-cell"><div class="s-num">12</div><div class="s-lbl">Countries</div></div>
+  <div class="s-cell"><div class="s-num">17</div><div class="s-lbl">Contacts found</div></div>
+</div>
+
+<script>
+  const STORE_KEY = 'argos_calendar_v1';
+
+  // Load saved state
+  function loadState() {
+    try {
+      const saved = localStorage.getItem(STORE_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch(e) { return {}; }
+  }
+
+  // Save full state
+  function saveState() {
+    const state = {};
+    document.querySelectorAll('tr[data-id]').forEach(row => {
+      const id = row.dataset.id;
+      const h = row.querySelector('.ptoggle button:first-child');
+      const m = row.querySelector('.ptoggle button:last-child');
+      const att = row.querySelector('.att-input');
+      state[id] = {
+        priority: h.classList.contains('ah') ? 'H' : m.classList.contains('am') ? 'M' : '',
+        attendees: att ? att.value : ''
+      };
+    });
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    showSaved();
+    updateCount();
+  }
+
+  // Restore state on load
+  function restoreState() {
+    const state = loadState();
+    document.querySelectorAll('tr[data-id]').forEach(row => {
+      const id = row.dataset.id;
+      if (!state[id]) return;
+      const { priority, attendees } = state[id];
+      const h = row.querySelector('.ptoggle button:first-child');
+      const m = row.querySelector('.ptoggle button:last-child');
+      const att = row.querySelector('.att-input');
+      if (priority === 'H') h.classList.add('ah');
+      else if (priority === 'M') m.classList.add('am');
+      if (att && attendees) {
+        att.value = attendees;
+        att.style.height = 'auto';
+        att.style.height = att.scrollHeight + 'px';
+      }
+    });
+    updateCount();
+  }
+
+  // Toggle priority
+  function tog(btn, level) {
+    const p = btn.parentElement;
+    const [h, m] = p.querySelectorAll('button');
+    const wasH = h.classList.contains('ah');
+    const wasM = m.classList.contains('am');
+    h.classList.remove('ah'); m.classList.remove('am');
+    if (level === 'H' && !wasH) h.classList.add('ah');
+    if (level === 'M' && !wasM) m.classList.add('am');
+    saveState();
+  }
+
+  // Save status flash
+  let saveTimer;
+  function showSaved() {
+    const el = document.getElementById('saveStatus');
+    el.textContent = '✓ Saved just now';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { el.textContent = 'All changes saved'; }, 2000);
+  }
+
+  // Update high count in summary
+  function updateCount() {
+    const count = document.querySelectorAll('.ptoggle button.ah').length;
+    document.getElementById('highCount').textContent = count;
+  }
+
+  // Auto-grow + save on textarea input
+  document.querySelectorAll('.att-input').forEach(t => {
+    t.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = this.scrollHeight + 'px';
+      saveState();
+    });
+  });
+
+  // Restore on page load
+  restoreState();
+</script>
+</body>
+</html>
