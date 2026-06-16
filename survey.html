@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argos — Technology Capital Allocation Survey</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0f0f0f; --paper: #f7f6f2; --rule: #d8d5cc;
+    --accent: #c84b2f; --accent-soft: #f5e8e5;
+    --tier1: #c84b2f; --tier2: #d97c2a; --tier3: #6b8f5e;
+    --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  }
+  body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 13px; line-height: 1.5; padding: 36px 28px; margin: 0 auto; max-width: 940px; }
+
+  .header { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 20px 0 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  h1 { font-size: 24px; font-weight: 600; letter-spacing: -.03em; line-height: 1.1; }
+  .subline { font-size: 11px; color: #666; margin-top: 6px; max-width: 560px; }
+  .header-right { text-align: right; font-family: var(--mono); font-size: 10px; color: #888; line-height: 1.9; white-space: nowrap; }
+
+  .save-bar { background: #eef2ea; border: 1px solid #bfcdb8; border-radius: 4px; padding: 8px 14px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: #4a6e42; gap: 12px; }
+  .save-bar span { opacity: 0.85; }
+  .save-status { font-weight: 500; transition: opacity .3s; white-space: nowrap; }
+
+  /* Section blocks */
+  .section { margin-bottom: 30px; }
+  .sec-head { display: flex; align-items: baseline; gap: 10px; border-bottom: 1px solid var(--rule); padding-bottom: 7px; margin-bottom: 14px; }
+  .sec-num { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: .1em; }
+  .sec-title { font-size: 15px; font-weight: 600; letter-spacing: -.02em; }
+  .sec-desc { font-size: 11px; color: #888; margin-bottom: 16px; margin-top: -8px; }
+
+  /* Field grid for "about you" */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.full { grid-column: 1 / -1; }
+  label.flbl { font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: #999; }
+  .req { color: var(--accent); }
+  input[type=text], input[type=email], select, textarea {
+    font-family: var(--sans); font-size: 13px; color: var(--ink); background: #fff;
+    border: 1px solid var(--rule); border-radius: 3px; padding: 8px 10px; outline: none;
+    transition: border-color .13s, box-shadow .13s; width: 100%;
+  }
+  textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  input.err, select.err { border-color: var(--accent); background: var(--accent-soft); }
+  ::placeholder { color: #bbb; font-style: italic; }
+
+  /* Rating rows (themes) */
+  .rate-list { display: flex; flex-direction: column; }
+  .rate-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--rule); }
+  .rate-row:last-child { border-bottom: none; }
+  .rate-name { font-size: 12.5px; font-weight: 500; }
+  .rate-name small { display: block; font-family: var(--mono); font-size: 9px; color: #aaa; font-weight: 400; margin-top: 1px; letter-spacing: .04em; }
+  .seg { display: flex; border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+  .seg button { border: none; background: #ece9e2; color: #bbb; padding: 5px 11px; cursor: pointer; font-family: var(--mono); font-size: 10px; font-weight: 500; transition: all .12s; border-right: 1px solid var(--rule); white-space: nowrap; }
+  .seg button:last-child { border-right: none; }
+  .seg button:hover:not(.on) { background: #dedad3; color: #555; }
+  .seg button.on.lv-high { background: var(--accent-soft); color: var(--tier1); }
+  .seg button.on.lv-med  { background: #fdf2e6; color: var(--tier2); }
+  .seg button.on.lv-low  { background: #eef3ea; color: var(--tier3); }
+  .seg button.on.lv-na   { background: #e9e7e1; color: #777; }
+
+  /* Bottleneck chips */
+  .chip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  @media (max-width: 640px){ .chip-grid, .grid { grid-template-columns: 1fr; } }
+  .chip { display: flex; align-items: center; gap: 9px; padding: 9px 11px; border: 1px solid var(--rule); border-radius: 4px; background: #fff; cursor: pointer; transition: all .12s; font-size: 12px; user-select: none; }
+  .chip:hover { border-color: #c3bfb4; background: #fbfaf7; }
+  .chip.sel { border-color: var(--accent); background: var(--accent-soft); }
+  .chip .box { width: 15px; height: 15px; border: 1.5px solid var(--rule); border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; line-height: 1; }
+  .chip.sel .box { background: var(--accent); border-color: var(--accent); }
+
+  .rank-hint { font-family: var(--mono); font-size: 9px; color: #aaa; margin-top: 10px; }
+
+  /* Submit */
+  .submit-bar { border-top: 3px solid var(--ink); margin-top: 34px; padding-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .submit-note { font-size: 11px; color: #888; max-width: 520px; }
+  .actions { display: flex; gap: 10px; }
+  button.btn { font-family: var(--mono); font-size: 11px; letter-spacing: .05em; padding: 11px 20px; border-radius: 4px; cursor: pointer; border: 1px solid var(--ink); transition: all .13s; }
+  button.btn.primary { background: var(--ink); color: var(--paper); }
+  button.btn.primary:hover { background: var(--accent); border-color: var(--accent); }
+  button.btn.ghost { background: transparent; color: #777; border-color: var(--rule); }
+  button.btn.ghost:hover { color: var(--ink); border-color: #999; }
+
+  /* Review panel */
+  .overlay { position: fixed; inset: 0; background: rgba(15,15,15,.55); display: none; align-items: center; justify-content: center; padding: 24px; z-index: 50; }
+  .overlay.open { display: flex; }
+  .panel { background: var(--paper); border-radius: 6px; width: 100%; max-width: 600px; max-height: 86vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+  .panel-head { padding: 18px 20px 14px; border-bottom: 1px solid var(--rule); }
+  .panel-head h2 { font-size: 16px; font-weight: 600; letter-spacing: -.02em; }
+  .panel-head p { font-size: 11px; color: #777; margin-top: 4px; }
+  .panel-body { padding: 16px 20px; overflow: auto; }
+  .panel-body textarea { width: 100%; min-height: 240px; font-family: var(--mono); font-size: 10.5px; line-height: 1.55; background: #fff; }
+  .panel-foot { padding: 14px 20px; border-top: 1px solid var(--rule); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+  .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 11px; padding: 10px 18px; border-radius: 4px; opacity: 0; transition: all .25s; pointer-events: none; z-index: 60; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .err-banner { background: var(--accent-soft); border: 1px solid var(--accent); color: var(--accent); border-radius: 4px; padding: 10px 14px; font-size: 11.5px; margin-bottom: 18px; display: none; }
+  .err-banner.show { display: block; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="eyebrow">Argos Intelligence — Client Insight Program</div>
+    <h1>Technology Capital Allocation Survey</h1>
+    <div class="subline">A short questionnaire to understand where you are deploying capital in technology, the themes you are tracking, and the friction points across your pre-deal and portfolio activity. ~5 minutes. Your answers are compiled into an email you send back to us — nothing is stored online.</div>
+  </div>
+  <div class="header-right">2026 Edition<br>Confidential<br>5 sections · ~5 min</div>
+</div>
+
+<div class="save-bar">
+  <span>✦ Your progress is saved automatically in this browser — you can close and resume later</span>
+  <span class="save-status" id="saveStatus">All changes saved</span>
+</div>
+
+<div class="err-banner" id="errBanner"></div>
+
+<!-- SECTION 1 — ABOUT YOU -->
+<div class="section">
+  <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">About you</span></div>
+  <div class="grid">
+    <div class="field">
+      <label class="flbl" for="f_name">Name <span class="req">*</span></label>
+      <input type="text" id="f_name" data-key="name" placeholder="First and last name">
+    </div>
+    <div class="field">
+      <label class="flbl" for="f_firm">Firm / Organization <span class="req">*</span></label>
+      <input type="text" id="f_firm" data-key="firm" placeholder="Your firm">
+    </div>
+    <div class="field">
+      <label class="flbl" for="f_role">Role / Title</label>
+      <input type="text" id="f_role" data-key="role" placeholder="e.g. Partner, Head of Tech, CIO">
+    </div>
+    <div class="field">
+      <label class="flbl" for="f_email">Email</label>
+      <input type="email" id="f_email" data-key="email" placeholder="you@firm.com">
+    </div>
+    <div class="field">
+      <label class="flbl" for="f_type">Investor type</label>
+      <select id="f_type" data-key="investorType">
+        <option value="">Select…</option>
+        <option>GP — Private Equity</option>
+        <option>GP — Venture Capital</option>
+        <option>GP — Growth</option>
+        <option>LP — Institutional</option>
+        <option>LP — Fund of Funds</option>
+        <option>CVC — Corporate Venture</option>
+        <option>SWF — Sovereign Wealth Fund</option>
+        <option>Family Office</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="flbl" for="f_aum">Approx. AUM / fund size (optional)</label>
+      <input type="text" id="f_aum" data-key="aum" placeholder="e.g. €500M, $2.5B">
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2 — THEMES -->
+<div class="section">
+  <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Technology themes — trends &amp; conviction</span></div>
+  <div class="sec-desc">For each theme, indicate your level of interest / conviction for capital deployment over the next 12–18 months.</div>
+  <div class="rate-list" id="themeList"></div>
+  <div class="field full" style="margin-top:14px;">
+    <label class="flbl" for="f_themesOther">Other themes you are tracking that aren't listed</label>
+    <textarea id="f_themesOther" data-key="themesOther" placeholder="Free text…"></textarea>
+  </div>
+</div>
+
+<!-- SECTION 3 — PRE-DEAL BOTTLENECKS -->
+<div class="section">
+  <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Pre-deal bottlenecks</span></div>
+  <div class="sec-desc">Which parts of your sourcing, evaluation and execution process create the most friction today? Select all that apply.</div>
+  <div class="chip-grid" id="preDealList"></div>
+  <div class="field full" style="margin-top:14px;">
+    <label class="flbl" for="f_preTop">Your single biggest pre-deal bottleneck — and why</label>
+    <textarea id="f_preTop" data-key="preDealTop" placeholder="Free text…"></textarea>
+  </div>
+</div>
+
+<!-- SECTION 4 — PORTFOLIO BOTTLENECKS -->
+<div class="section">
+  <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">Portfolio company bottlenecks</span></div>
+  <div class="sec-desc">Where do your portfolio companies most often get stuck on technology &amp; talent? Select all that apply.</div>
+  <div class="chip-grid" id="portfolioList"></div>
+  <div class="field full" style="margin-top:14px;">
+    <label class="flbl" for="f_pfTop">The recurring issue you most wish you could solve across the portfolio</label>
+    <textarea id="f_pfTop" data-key="portfolioTop" placeholder="Free text…"></textarea>
+  </div>
+</div>
+
+<!-- SECTION 5 — OUTLOOK -->
+<div class="section">
+  <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">Allocation outlook &amp; how we can help</span></div>
+  <div class="grid">
+    <div class="field full">
+      <label class="flbl" for="f_outlook">How do you expect your technology allocation to change over the next 12–18 months?</label>
+      <textarea id="f_outlook" data-key="outlook" placeholder="Direction, pace, sectors you're leaning into or out of…"></textarea>
+    </div>
+    <div class="field">
+      <label class="flbl" for="f_horizon">Primary stage / focus</label>
+      <select id="f_horizon" data-key="stage">
+        <option value="">Select…</option>
+        <option>Early / Seed</option>
+        <option>Venture / Series A–B</option>
+        <option>Growth</option>
+        <option>Buyout / Mid-market</option>
+        <option>Large-cap / Mega</option>
+        <option>Secondaries</option>
+        <option>Multi-stage</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="flbl" for="f_ticket">Typical ticket size (optional)</label>
+      <input type="text" id="f_ticket" data-key="ticket" placeholder="e.g. €10–50M">
+    </div>
+    <div class="field full">
+      <label class="flbl" for="f_support">What kind of intelligence or support would be most valuable to you?</label>
+      <textarea id="f_support" data-key="support" placeholder="e.g. sector deep-dives, tech due diligence, benchmarking, expert access…"></textarea>
+    </div>
+    <div class="field full">
+      <label class="flbl" for="f_open">Anything else you'd like to share</label>
+      <textarea id="f_open" data-key="open" placeholder="Open comments…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMIT -->
+<div class="submit-bar">
+  <div class="submit-note">When you submit, your answers are compiled into a pre-filled email to the Argos team. You'll get a chance to review the text first, and you can copy it manually if your mail client doesn't open.</div>
+  <div class="actions">
+    <button class="btn ghost" id="resetBtn">Clear form</button>
+    <button class="btn primary" id="submitBtn">Review &amp; submit →</button>
+  </div>
+</div>
+
+<!-- REVIEW OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Review your responses</h2>
+      <p>This is exactly what will be sent. Edit if you wish, then send by email or copy the text.</p>
+    </div>
+    <div class="panel-body">
+      <textarea id="reviewText" spellcheck="false"></textarea>
+    </div>
+    <div class="panel-foot">
+      <button class="btn ghost" id="closeReview">Back to form</button>
+      <button class="btn ghost" id="copyBtn">Copy text</button>
+      <button class="btn primary" id="sendBtn">Open email →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ============================================================
+     CONFIG — change RECIPIENT to the Argos inbox that collects responses
+     ============================================================ */
+  const RECIPIENT = 'remi.haget@gmail.com';
+  const STORE_KEY = 'argos_tech_survey_v1';
+
+  /* ---- Data definitions ---- */
+  const THEMES = [
+    { id: 'genai',     name: 'Generative AI & foundation models', sub: 'LLMs, multimodal, model infra' },
+    { id: 'agentic',   name: 'Agentic AI & AI applications',      sub: 'autonomous agents, vertical copilots' },
+    { id: 'aiinfra',   name: 'AI infrastructure & compute',       sub: 'GPUs, inference, MLOps' },
+    { id: 'data',      name: 'Data infrastructure & analytics',   sub: 'pipelines, warehouses, governance' },
+    { id: 'cyber',     name: 'Cybersecurity',                     sub: 'identity, cloud sec, threat detection' },
+    { id: 'saas',      name: 'Vertical & B2B SaaS',               sub: 'industry-specific software' },
+    { id: 'fintech',   name: 'Fintech & payments',                sub: 'embedded finance, infra' },
+    { id: 'climate',   name: 'Climate & energy tech',             sub: 'grid, storage, decarbonization' },
+    { id: 'health',    name: 'Healthtech & digital health',       sub: 'care delivery, bio-IT' },
+    { id: 'robotics',  name: 'Robotics & automation',             sub: 'industrial, logistics' },
+    { id: 'semi',      name: 'Semiconductors & hardware',         sub: 'chips, photonics, edge' },
+    { id: 'defense',   name: 'Defense & dual-use tech',           sub: 'aerospace, security, sovereignty' },
+    { id: 'devtools',  name: 'Developer tools & platforms',       sub: 'infra software, DevOps' },
+    { id: 'web3',      name: 'Blockchain & digital assets',       sub: 'infra, tokenization' }
+  ];
+
+  const PREDEAL = [
+    'Deal sourcing & origination',
+    'Quality / volume of deal flow',
+    'Technical due diligence (assessing the tech)',
+    'Market & competitive analysis',
+    'Valuation discipline in tech assets',
+    'Speed of execution vs. competition',
+    'Internal bandwidth / team capacity',
+    'Access to sector / technical experts',
+    'Data & benchmarks for decision-making',
+    'Cyber & IT due diligence',
+    'Assessing the target’s engineering talent',
+    'Founder / management assessment'
+  ];
+
+  const PORTFOLIO = [
+    'Hiring & retaining engineering talent',
+    'Go-to-market scaling',
+    'Technical debt & platform modernization',
+    'Cybersecurity posture & resilience',
+    'AI adoption strategy',
+    'Data infrastructure & analytics maturity',
+    'Cloud cost / infrastructure optimization',
+    'Product roadmap prioritization',
+    'Buy-and-build / M&A integration',
+    'Regulatory & compliance (incl. AI, data)',
+    'KPI visibility & reporting',
+    'Leadership / CTO bench strength'
+  ];
+
+  const LEVELS = [
+    { v: 'High', cls: 'lv-high' },
+    { v: 'Med',  cls: 'lv-med'  },
+    { v: 'Low',  cls: 'lv-low'  },
+    { v: '—', cls: 'lv-na' }
+  ];
+
+  /* ---- State ---- */
+  let state = load();
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || blank(); }
+    catch (e) { return blank(); }
+  }
+  function blank() {
+    return { fields: {}, themes: {}, preDeal: [], portfolio: [] };
+  }
+  function persist() {
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    flashSaved();
+  }
+
+  /* ---- Render theme rating rows ---- */
+  const themeList = document.getElementById('themeList');
+  THEMES.forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'rate-row';
+    const nm = document.createElement('div');
+    nm.className = 'rate-name';
+    nm.innerHTML = t.name + '<small>' + t.sub + '</small>';
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    LEVELS.forEach(l => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = l.v;
+      b.className = (state.themes[t.id] === l.v) ? 'on ' + l.cls : '';
+      b.dataset.cls = l.cls;
+      b.addEventListener('click', () => {
+        state.themes[t.id] = (state.themes[t.id] === l.v) ? undefined : l.v;
+        [...seg.children].forEach(c => c.className = '');
+        if (state.themes[t.id]) b.className = 'on ' + l.cls;
+        persist();
+      });
+      seg.appendChild(b);
+    });
+    row.appendChild(nm); row.appendChild(seg);
+    themeList.appendChild(row);
+  });
+
+  /* ---- Render bottleneck chips ---- */
+  function renderChips(items, container, stateArr) {
+    items.forEach(label => {
+      const chip = document.createElement('div');
+      chip.className = 'chip' + (stateArr.includes(label) ? ' sel' : '');
+      chip.innerHTML = '<span class="box">' + (stateArr.includes(label) ? '✓' : '') + '</span><span>' + label + '</span>';
+      chip.addEventListener('click', () => {
+        const i = stateArr.indexOf(label);
+        if (i >= 0) { stateArr.splice(i, 1); chip.classList.remove('sel'); chip.querySelector('.box').textContent = ''; }
+        else { stateArr.push(label); chip.classList.add('sel'); chip.querySelector('.box').textContent = '✓'; }
+        persist();
+      });
+      container.appendChild(chip);
+    });
+  }
+  renderChips(PREDEAL, document.getElementById('preDealList'), state.preDeal);
+  renderChips(PORTFOLIO, document.getElementById('portfolioList'), state.portfolio);
+
+  /* ---- Wire text/select fields ---- */
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const k = el.dataset.key;
+    if (state.fields[k] != null) el.value = state.fields[k];
+    el.addEventListener('input', () => { state.fields[k] = el.value; persist(); });
+    el.addEventListener('change', () => { state.fields[k] = el.value; persist(); });
+  });
+
+  /* ---- Save status flash ---- */
+  let saveTimer;
+  function flashSaved() {
+    const el = document.getElementById('saveStatus');
+    el.textContent = '✓ Saved just now';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { el.textContent = 'All changes saved'; }, 1600);
+  }
+
+  /* ---- Toast ---- */
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  /* ---- Build the compiled response text ---- */
+  function buildText() {
+    const f = state.fields;
+    const L = [];
+    L.push('ARGOS — TECHNOLOGY CAPITAL ALLOCATION SURVEY');
+    L.push('Submitted: ' + new Date().toLocaleString());
+    L.push('========================================');
+    L.push('');
+    L.push('01 — ABOUT YOU');
+    L.push('Name:        ' + (f.name || '—'));
+    L.push('Firm:        ' + (f.firm || '—'));
+    L.push('Role:        ' + (f.role || '—'));
+    L.push('Email:       ' + (f.email || '—'));
+    L.push('Type:        ' + (f.investorType || '—'));
+    L.push('AUM:         ' + (f.aum || '—'));
+    L.push('');
+    L.push('02 — TECHNOLOGY THEMES (interest / conviction)');
+    const rated = THEMES.filter(t => state.themes[t.id]);
+    if (rated.length) rated.forEach(t => L.push('  [' + state.themes[t.id].padEnd(4) + '] ' + t.name));
+    else L.push('  (none rated)');
+    if (f.themesOther) { L.push('  Other themes tracked: ' + f.themesOther); }
+    L.push('');
+    L.push('03 — PRE-DEAL BOTTLENECKS');
+    if (state.preDeal.length) state.preDeal.forEach(x => L.push('  • ' + x));
+    else L.push('  (none selected)');
+    if (f.preDealTop) L.push('  Biggest pre-deal bottleneck: ' + f.preDealTop);
+    L.push('');
+    L.push('04 — PORTFOLIO COMPANY BOTTLENECKS');
+    if (state.portfolio.length) state.portfolio.forEach(x => L.push('  • ' + x));
+    else L.push('  (none selected)');
+    if (f.portfolioTop) L.push('  Most-wished-solved issue: ' + f.portfolioTop);
+    L.push('');
+    L.push('05 — ALLOCATION OUTLOOK');
+    L.push('Outlook (12–18m): ' + (f.outlook || '—'));
+    L.push('Stage / focus:    ' + (f.stage || '—'));
+    L.push('Typical ticket:   ' + (f.ticket || '—'));
+    L.push('Support wanted:   ' + (f.support || '—'));
+    L.push('Other comments:   ' + (f.open || '—'));
+    L.push('');
+    L.push('— End of response —');
+    return L.join('\n');
+  }
+
+  /* ---- Validation (lightweight) ---- */
+  function validate() {
+    const errs = [];
+    const f = state.fields;
+    const nameEl = document.getElementById('f_name');
+    const firmEl = document.getElementById('f_firm');
+    [nameEl, firmEl].forEach(e => e.classList.remove('err'));
+    if (!f.name) { errs.push('your name'); nameEl.classList.add('err'); }
+    if (!f.firm) { errs.push('your firm'); firmEl.classList.add('err'); }
+    const banner = document.getElementById('errBanner');
+    if (errs.length) {
+      banner.textContent = 'Please fill in ' + errs.join(' and ') + ' before submitting.';
+      banner.classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return false;
+    }
+    banner.classList.remove('show');
+    return true;
+  }
+
+  /* ---- Submit flow ---- */
+  const overlay = document.getElementById('overlay');
+  document.getElementById('submitBtn').addEventListener('click', () => {
+    if (!validate()) return;
+    document.getElementById('reviewText').value = buildText();
+    overlay.classList.add('open');
+  });
+  document.getElementById('closeReview').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+
+  document.getElementById('sendBtn').addEventListener('click', () => {
+    const body = document.getElementById('reviewText').value;
+    const firm = state.fields.firm || 'Client';
+    const subject = 'Tech Capital Allocation Survey — ' + firm;
+    window.location.href = 'mailto:' + encodeURIComponent(RECIPIENT) +
+      '?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(body);
+    toast('Opening your email client…');
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const txt = document.getElementById('reviewText').value;
+    try { await navigator.clipboard.writeText(txt); toast('Copied to clipboard'); }
+    catch (e) {
+      const ta = document.getElementById('reviewText'); ta.select(); document.execCommand('copy');
+      toast('Copied to clipboard');
+    }
+  });
+
+  /* ---- Reset ---- */
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if (!confirm('Clear all your answers? This cannot be undone.')) return;
+    localStorage.removeItem(STORE_KEY);
+    location.reload();
+  });
+</script>
+</body>
+</html>
