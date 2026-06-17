@@ -2,7 +2,7 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: ["claude/deeptech-ecosystem-mapping-kv3vdg"]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
