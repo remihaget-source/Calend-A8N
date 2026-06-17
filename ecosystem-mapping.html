@@ -3,442 +3,439 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A8N — Ecosystem Mapping Engine</title>
+<title>A8N Intelligence — Ecosystem Mapping</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --ink: #0f0f0f; --paper: #f7f6f2; --rule: #d8d5cc; --card: #ffffff;
-    --accent: #c84b2f; --accent-soft: #f5e8e5;
-    --q1: #c84b2f; --q2: #d97c2a; --q3: #4a6e42; --q4: #b1aca0;
-    --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  :root{
+    --ink:#0f0f0f; --paper:#f7f6f2; --rule:#d8d5cc; --card:#fff;
+    --accent:#c84b2f; --accent-soft:#f5e8e5;
+    --q1:#c84b2f; --q2:#d97c2a; --q3:#4a6e42; --q4:#b1aca0;
+    --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif;
   }
-  body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 13px; line-height: 1.55; padding: 36px 28px 64px; max-width: 1180px; margin: 0 auto; }
+  body{ background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:13px; line-height:1.55; padding:34px 26px 60px; max-width:1180px; margin:0 auto; }
 
-  .header { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 20px 0 16px; margin-bottom: 22px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
-  .eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 5px; }
-  h1 { font-size: 26px; font-weight: 700; letter-spacing: -.03em; line-height: 1.08; }
-  .subline { font-size: 12px; color: #666; margin-top: 5px; max-width: 640px; }
-  .header-right { text-align: right; font-family: var(--mono); font-size: 10px; color: #888; line-height: 1.9; white-space: nowrap; }
+  .header{ border-top:3px solid var(--ink); border-bottom:1px solid var(--rule); padding:18px 0 14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; }
+  .brand{ font-family:var(--mono); font-size:12px; letter-spacing:.34em; font-weight:500; }
+  .eyebrow{ font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:8px 0 4px; }
+  h1{ font-size:25px; font-weight:700; letter-spacing:-.03em; line-height:1.08; }
+  .subline{ font-size:12.5px; color:#666; margin-top:5px; max-width:560px; }
+  .header-right{ text-align:right; font-family:var(--mono); font-size:10px; color:#888; line-height:1.9; white-space:nowrap; }
 
-  h2 { font-size: 11px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .12em; color: #999; margin-bottom: 12px; font-weight: 500; }
+  /* one-line method strip (replaces noisy dataset grid) */
+  .method{ display:flex; flex-wrap:wrap; gap:6px 20px; font-family:var(--mono); font-size:10.5px; color:#777; padding:11px 0; border-bottom:1px solid var(--rule); margin-bottom:18px; }
+  .method b{ color:var(--ink); font-weight:500; }
+  .method .sep{ color:var(--accent); }
 
-  /* layout */
-  .grid { display: grid; grid-template-columns: 320px 1fr; gap: 22px; align-items: start; }
-  @media (max-width: 900px){ .grid { grid-template-columns: 1fr; } }
+  /* compact thesis bar */
+  .thesis{ display:flex; flex-wrap:wrap; gap:14px 18px; align-items:flex-end; background:var(--card); border:1px solid var(--rule); border-radius:6px; padding:14px 16px; margin-bottom:26px; }
+  .f label{ display:block; font-family:var(--mono); font-size:9px; letter-spacing:.05em; text-transform:uppercase; color:#999; margin-bottom:4px; }
+  .f select, .f input{ border:1px solid var(--rule); border-radius:4px; padding:7px 8px; font-family:var(--sans); font-size:12.5px; background:#fbfaf7; color:var(--ink); outline:none; }
+  .f select:focus,.f input:focus{ border-color:var(--accent); background:#fff; }
+  .rangeval{ font-family:var(--mono); color:var(--accent); }
+  .btn{ border:none; background:var(--ink); color:var(--paper); font-family:var(--mono); font-size:12px; letter-spacing:.04em; padding:10px 18px; border-radius:5px; cursor:pointer; transition:background .15s; }
+  .btn:hover{ background:var(--accent); }
 
-  /* thesis form card */
-  .card { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 18px; }
-  .field { margin-bottom: 14px; }
-  .field label { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .04em; text-transform: uppercase; color: #888; margin-bottom: 5px; }
-  .field select, .field input { width: 100%; border: 1px solid var(--rule); border-radius: 4px; padding: 8px 9px; font-family: var(--sans); font-size: 13px; background: #fbfaf7; color: var(--ink); outline: none; }
-  .field select:focus, .field input:focus { border-color: var(--accent); background: #fff; }
-  .hint { font-size: 10.5px; color: #aaa; margin-top: 4px; }
-  .rangeval { font-family: var(--mono); color: var(--accent); }
+  /* question blocks */
+  .qhead{ display:flex; align-items:baseline; gap:12px; margin:6px 0 14px; }
+  .qnum{ font-family:var(--mono); font-size:11px; font-weight:500; color:#fff; background:var(--ink); border-radius:4px; padding:3px 9px; letter-spacing:.08em; flex-shrink:0; }
+  .qtitle{ font-size:18px; font-weight:700; letter-spacing:-.02em; }
+  .qsub{ font-size:12px; color:#777; margin-left:auto; text-align:right; }
+  .qsub b{ color:var(--ink); }
 
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
-  .chip { font-family: var(--mono); font-size: 10px; padding: 5px 9px; border: 1px solid var(--rule); border-radius: 20px; cursor: pointer; background: #fbfaf7; color: #777; user-select: none; transition: all .12s; }
-  .chip.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .split{ display:grid; grid-template-columns:1.55fr 1fr; gap:22px; align-items:start; }
+  @media (max-width:860px){ .split{ grid-template-columns:1fr; } }
 
-  .btn { width: 100%; margin-top: 6px; border: none; background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 12px; letter-spacing: .04em; padding: 12px; border-radius: 5px; cursor: pointer; transition: background .15s; }
-  .btn:hover { background: var(--accent); }
+  .panel{ background:var(--card); border:1px solid var(--rule); border-radius:6px; padding:10px 8px 4px; }
+  svg{ width:100%; height:auto; display:block; }
 
-  /* plot */
-  .plot-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; gap: 16px; flex-wrap: wrap; }
-  .thesis-line { font-size: 12px; color: #444; }
-  .thesis-line b { color: var(--ink); }
-  #plotWrap { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 8px 4px; position: relative; }
-  svg { width: 100%; height: auto; display: block; }
-  .tooltip { position: fixed; pointer-events: none; background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 10.5px; line-height: 1.5; padding: 8px 10px; border-radius: 5px; opacity: 0; transition: opacity .1s; z-index: 50; max-width: 230px; }
-  .tooltip b { color: #ffb59f; }
+  .legend{ display:flex; gap:14px; flex-wrap:wrap; margin:12px 2px 0; font-family:var(--mono); font-size:10px; color:#777; }
+  .legend-item{ display:flex; align-items:center; gap:6px; }
+  .swatch{ width:9px; height:9px; border-radius:50%; }
+  .swatch.sq{ border-radius:2px; }
 
-  /* legend + quadrant key */
-  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 14px 2px 0; font-family: var(--mono); font-size: 10px; color: #777; }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .swatch { width: 9px; height: 9px; border-radius: 50%; }
+  /* ranked / shortlist lists */
+  .listtitle{ font-family:var(--mono); font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:#aaa; margin-bottom:6px; }
+  .row{ display:grid; align-items:center; padding:8px 4px; border-bottom:1px solid var(--rule); font-size:12px; cursor:pointer; }
+  .row:hover{ background:#f0ede6; }
+  .row.sel{ background:var(--accent-soft); }
+  .r-opp{ grid-template-columns:20px 1fr 42px 42px 64px; gap:8px; }
+  .r-co{ grid-template-columns:20px 1fr 52px 60px; gap:8px; }
+  .rk-num{ font-family:var(--mono); color:#bbb; }
+  .rk-name{ font-weight:600; }
+  .rk-dom{ font-family:var(--mono); font-size:9px; color:#999; }
+  .rk-m{ font-family:var(--mono); text-align:right; color:#555; }
+  .band{ font-family:var(--mono); font-size:9px; padding:2px 6px; border-radius:3px; text-align:center; white-space:nowrap; }
 
-  /* ranked opportunities */
-  .ranks { margin-top: 20px; }
-  .rank-row { display: grid; grid-template-columns: 22px 1fr 56px 56px 70px; gap: 10px; align-items: center; padding: 9px 4px; border-bottom: 1px solid var(--rule); font-size: 12px; }
-  .rank-row.hd { font-family: var(--mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: #aaa; border-bottom: 1px solid var(--rule); }
-  .rk-num { font-family: var(--mono); color: #bbb; }
-  .rk-name { font-weight: 600; }
-  .rk-dom { font-family: var(--mono); font-size: 9.5px; color: #999; }
-  .rk-metric { font-family: var(--mono); text-align: right; color: #555; }
-  .rk-band { font-family: var(--mono); font-size: 9px; padding: 2px 7px; border-radius: 3px; text-align: center; white-space: nowrap; }
+  /* funnel */
+  .funnel{ display:flex; gap:6px; margin:2px 0 14px; }
+  .fstage{ flex:1; text-align:center; background:#f1efe9; border:1px solid var(--rule); border-radius:4px; padding:7px 4px; }
+  .fstage .n{ font-family:var(--mono); font-size:17px; font-weight:500; line-height:1; }
+  .fstage .l{ font-family:var(--mono); font-size:8.5px; text-transform:uppercase; letter-spacing:.05em; color:#999; margin-top:3px; }
+  .fstage.hot{ background:var(--accent-soft); border-color:var(--accent); }
+  .fstage.hot .n{ color:var(--accent); }
 
-  /* datasets */
-  .datasets { margin-top: 30px; border-top: 3px solid var(--ink); padding-top: 22px; }
-  .ds-intro { font-size: 13.5px; color: #333; max-width: 760px; margin-bottom: 20px; line-height: 1.65; }
-  .ds-intro b { color: var(--ink); }
-  .ds-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
-  @media (max-width: 760px){ .ds-grid { grid-template-columns: repeat(2,1fr); } }
-  .ds-cell { background: var(--card); padding: 16px 14px; }
-  .ds-num { font-family: var(--mono); font-size: 22px; font-weight: 500; letter-spacing: -.03em; line-height: 1; }
-  .ds-lbl { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: .07em; color: var(--accent); margin: 7px 0 6px; }
-  .ds-src { font-size: 11px; color: #888; line-height: 1.5; }
+  .tooltip{ position:fixed; pointer-events:none; background:var(--ink); color:var(--paper); font-family:var(--mono); font-size:10.5px; line-height:1.5; padding:8px 10px; border-radius:5px; opacity:0; transition:opacity .1s; z-index:50; max-width:230px; }
+  .tooltip b{ color:#ffb59f; }
 
-  .pipeline { margin-top: 22px; display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; }
-  .pipe-step { flex: 1; min-width: 150px; background: var(--card); border: 1px solid var(--rule); padding: 13px 14px; position: relative; }
-  .pipe-step:not(:last-child){ border-right: none; }
-  .pipe-step .n { font-family: var(--mono); font-size: 10px; color: var(--accent); }
-  .pipe-step .t { font-weight: 600; font-size: 12.5px; margin: 4px 0 3px; }
-  .pipe-step .d { font-size: 11px; color: #777; line-height: 1.45; }
-
-  .footnote { margin-top: 26px; font-family: var(--mono); font-size: 10px; color: #aaa; line-height: 1.7; border-top: 1px solid var(--rule); padding-top: 14px; }
+  .qblock{ margin-bottom:34px; }
+  .footnote{ margin-top:8px; font-family:var(--mono); font-size:10px; color:#aaa; line-height:1.7; border-top:1px solid var(--rule); padding-top:14px; }
 </style>
 </head>
 <body>
 
 <div class="header">
   <div>
-    <div class="eyebrow">A8N · Macro Allocation · Deep-Tech Intelligence</div>
-    <h1>A8N Ecosystem Mapping Engine</h1>
-    <div class="subline">Define an investment thesis. We map the deep-tech landscape against your existing know-how and surface where the structure of the economy says you should deploy capital next.</div>
+    <div class="brand">A8N&nbsp;&nbsp;INTELLIGENCE</div>
+    <div class="eyebrow">Macro Allocation · Deep-Tech Ecosystem Mapping</div>
+    <h1>From a thesis to two answers</h1>
+    <div class="subline">The intelligence layer for capital in complex technology. Define a fund thesis — we answer the only two questions that matter.</div>
   </div>
-  <div class="header-right">Demo build · Jun 2026<br>8 domains · 80 sub-technologies<br>Relatedness × Complexity model</div>
+  <div class="header-right">Demo build · Jun 2026<br>8 domains · 80 sub-technologies<br>Relatedness × Complexity · RCA</div>
 </div>
 
-<div class="grid">
+<div class="method">
+  <span><b>OpenAlex</b> 250M papers</span>
+  <span><b>RegPat</b> 80M patents · 250k sub-tech classes</span>
+  <span><b>Crunchbase</b> capital flow</span>
+  <span><b>Lightcast</b> talent market</span>
+  <span class="sep">·</span>
+  <span>Method: relatedness density × complexity — Balland et al. (2019)</span>
+</div>
 
-  <!-- ===== THESIS PANEL ===== -->
-  <div class="card">
-    <h2>Fund Thesis</h2>
+<!-- THESIS BAR -->
+<div class="thesis">
+  <div class="f"><label>Target domain</label>
+    <select id="focus"></select></div>
+  <div class="f"><label>Geography</label>
+    <select id="geo">
+      <option value="global" selected>Global</option>
+      <option value="nordics">Nordics — Europe</option>
+      <option value="dach">DACH — Europe</option>
+      <option value="uk">UK &amp; Ireland</option>
+      <option value="france">France &amp; Benelux</option>
+      <option value="us">North America</option>
+      <option value="apac">APAC</option>
+    </select></div>
+  <div class="f"><label>Stage / size</label>
+    <select id="size">
+      <option value="seed">Early — seed</option>
+      <option value="growth" selected>Mid-size — growth</option>
+      <option value="late">Late — scale-up</option>
+    </select></div>
+  <div class="f"><label>Min revenue <span class="rangeval" id="revVal">€20M</span></label>
+    <input type="range" id="rev" min="0" max="100" step="5" value="20" style="width:120px"></div>
+  <div class="f"><label>Portfolio domain</label>
+    <select id="pfDomain"></select></div>
+  <div class="f"><label># companies <span class="rangeval" id="pfVal">5</span></label>
+    <input type="range" id="pfCount" min="0" max="12" step="1" value="5" style="width:90px"></div>
+  <button class="btn" id="run">↻ Generate</button>
+</div>
 
-    <div class="field">
-      <label>Target domain (hunting ground)</label>
-      <select id="focus"></select>
-      <div class="hint">e.g. "MedTech Nordics" → Biotech / Health</div>
-    </div>
-
-    <div class="field">
-      <label>Geography</label>
-      <select id="geo">
-        <option value="nordics">Nordics — Europe</option>
-        <option value="dach">DACH — Europe</option>
-        <option value="uk">UK &amp; Ireland</option>
-        <option value="france">France &amp; Benelux</option>
-        <option value="us">North America</option>
-        <option value="apac">APAC</option>
-        <option value="global">Global</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Company stage / size</label>
-      <select id="size">
-        <option value="seed">Early — pre-revenue / seed</option>
-        <option value="growth" selected>Mid-size — growth</option>
-        <option value="late">Late — scale-up / buyout</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Minimum revenue — <span class="rangeval" id="revVal">€20M</span></label>
-      <input type="range" id="rev" min="0" max="100" step="5" value="20">
-      <div class="hint">Filters opportunities to markets with matching depth of capital flow.</div>
-    </div>
-
-    <div class="field">
-      <label>Existing portfolio — domain</label>
-      <select id="pfDomain"></select>
-    </div>
-
-    <div class="field">
-      <label>Existing portfolio — # companies: <span class="rangeval" id="pfVal">5</span></label>
-      <input type="range" id="pfCount" min="0" max="12" step="1" value="5">
-      <div class="hint">Your accumulated know-how. Anchors relatedness density.</div>
-    </div>
-
-    <button class="btn" id="run">↻ Generate ecosystem map</button>
+<!-- ===== QUESTION 1 ===== -->
+<div class="qblock">
+  <div class="qhead">
+    <span class="qnum">Q1</span>
+    <span class="qtitle">In which sub-technology?</span>
+    <span class="qsub" id="thesisLine"></span>
   </div>
-
-  <!-- ===== RESULTS ===== -->
-  <div>
-    <div class="plot-head">
-      <h2 style="margin-bottom:0">Investment Graph</h2>
-      <div class="thesis-line" id="thesisLine"></div>
+  <div class="split">
+    <div>
+      <div class="panel" id="plotWrap"></div>
+      <div class="legend">
+        <div class="legend-item"><span class="swatch" style="background:var(--q1)"></span>Strategic adjacency — build on strength</div>
+        <div class="legend-item"><span class="swatch" style="background:var(--q2)"></span>Frontier bet</div>
+        <div class="legend-item"><span class="swatch" style="background:var(--q3)"></span>Quick adjacency</div>
+        <div class="legend-item">◆ portfolio &nbsp;·&nbsp; ○ size = capital flow</div>
+      </div>
     </div>
-    <div id="plotWrap"></div>
-
-    <div class="legend">
-      <div class="legend-item"><span class="swatch" style="background:var(--q1)"></span>Strategic adjacency — build on strength</div>
-      <div class="legend-item"><span class="swatch" style="background:var(--q2)"></span>Frontier bet — high value, longer jump</div>
-      <div class="legend-item"><span class="swatch" style="background:var(--q3)"></span>Quick adjacency — lower differentiation</div>
-      <div class="legend-item"><span class="swatch" style="background:var(--q4)"></span>Out of thesis</div>
-      <div class="legend-item">◆ existing portfolio &nbsp;·&nbsp; ○ size = capital flow</div>
-    </div>
-
-    <div class="ranks">
-      <h2 style="margin-top:22px">Top Opportunities — ranked by structural signal</h2>
-      <div class="rank-row hd">
-        <div>#</div><div>Sub-technology</div>
-        <div class="rk-metric">Relat.</div><div class="rk-metric">Cplx.</div><div class="rk-metric">Verdict</div>
+    <div>
+      <div class="listtitle">Top opportunities — click to inspect companies →</div>
+      <div class="row r-opp" style="cursor:default">
+        <div></div><div class="listtitle" style="margin:0">Sub-technology</div>
+        <div class="rk-m">Rel.</div><div class="rk-m">Cplx.</div><div class="rk-m">Verdict</div>
       </div>
       <div id="rankList"></div>
     </div>
   </div>
 </div>
 
-<div class="tooltip" id="tip"></div>
-
-<!-- ===== DATASETS NARRATIVE ===== -->
-<div class="datasets">
-  <h2>How the map is built — connecting the structure of the economy</h2>
-  <div class="ds-intro">
-    We don't rely on opinion or pitch decks. We index the largest research, IP, capital and talent datasets in the world and
-    <b>connect them into a single network</b>. The signal comes from <b>economic and technological structure</b>: which capabilities sit
-    next to which, who has the know-how, where knowledge is becoming dense — and therefore where a fund with your specific portfolio can
-    realistically win. This is a prediction game on the network, not a ranking of buzzwords.
+<!-- ===== QUESTION 2 ===== -->
+<div class="qblock">
+  <div class="qhead">
+    <span class="qnum">Q2</span>
+    <span class="qtitle">In which company?</span>
+    <span class="qsub" id="treeSubLine"></span>
   </div>
-
-  <div class="ds-grid">
-    <div class="ds-cell">
-      <div class="ds-num">250M</div>
-      <div class="ds-lbl">Research papers</div>
-      <div class="ds-src">OpenAlex · arXiv · NeurIPS · Overton (policy &amp; industry research)</div>
+  <div class="split">
+    <div>
+      <div class="panel" id="treeWrap"></div>
+      <div class="legend">
+        <div class="legend-item"><span class="swatch sq" style="background:#2f6b3f"></span>Technological RCA &gt; 1 — specialized / competitive</div>
+        <div class="legend-item"><span class="swatch sq" style="background:#7a2e2e"></span>RCA &lt; 1 — present but not specialized</div>
+        <div class="legend-item">box size = share of patents in the sub-technology</div>
+      </div>
     </div>
-    <div class="ds-cell">
-      <div class="ds-num">80M</div>
-      <div class="ds-lbl">Patents</div>
-      <div class="ds-src">Google Patents · OECD REGPAT · 250k sub-technology classifications</div>
+    <div>
+      <div class="listtitle">Deal funnel</div>
+      <div class="funnel">
+        <div class="fstage"><div class="n" id="fUniverse">—</div><div class="l">Universe</div></div>
+        <div class="fstage"><div class="n" id="fScreen">—</div><div class="l">Screened</div></div>
+        <div class="fstage hot"><div class="n" id="fShort">—</div><div class="l">Shortlist</div></div>
+      </div>
+      <div class="listtitle">Shortlist — ranked by RCA × scale × thesis fit</div>
+      <div class="row r-co" style="cursor:default">
+        <div></div><div class="listtitle" style="margin:0">Company</div>
+        <div class="rk-m">RCA</div><div class="rk-m">Pat. share</div>
+      </div>
+      <div id="coList"></div>
     </div>
-    <div class="ds-cell">
-      <div class="ds-num">Capital flow</div>
-      <div class="ds-lbl">Investment</div>
-      <div class="ds-src">Crunchbase · PitchBook · OECD CRS · climate finance trackers</div>
-    </div>
-    <div class="ds-cell">
-      <div class="ds-num">Talent market</div>
-      <div class="ds-lbl">Labour supply &amp; demand</div>
-      <div class="ds-src">Lightcast (demand) · LaborData (skills supply) · open-source — GitHub, Hugging Face</div>
-    </div>
-    <div class="ds-cell">
-      <div class="ds-num">Policy</div>
-      <div class="ds-lbl">Regulatory frontier</div>
-      <div class="ds-src">EU AI Act · US state &amp; federal law · public innovation programmes</div>
-    </div>
-  </div>
-
-  <div class="pipeline">
-    <div class="pipe-step"><div class="n">01</div><div class="t">Scrape &amp; scout</div><div class="d">Ingest papers, patents, deals, job posts and policy across every deep-tech domain.</div></div>
-    <div class="pipe-step"><div class="n">02</div><div class="t">Connect &amp; disambiguate</div><div class="d">Link entities into one graph — "MIT" and "Massachusetts Institute of Technology" must be the same node, or the answer is wrong.</div></div>
-    <div class="pipe-step"><div class="n">03</div><div class="t">Complexity analysis</div><div class="d">Compute complexity (depth of know-how) and relatedness density (proximity to your capabilities).</div></div>
-    <div class="pipe-step"><div class="n">04</div><div class="t">Thesis overlay</div><div class="d">Project your portfolio &amp; constraints onto the network to rank where you can realistically deploy.</div></div>
-  </div>
-
-  <div class="footnote">
-    Demo / illustrative engine. Sub-technology coordinates are generated from a structural model for demonstration; in production they are
-    computed from the live connected datasets above. Method: economic-complexity &amp; relatedness (product-space) framework — Hidalgo–Hausmann lineage.
   </div>
 </div>
 
+<div class="footnote">
+  A8N Intelligence — illustrative demo. Coordinates, RCA and company shares are generated from a structural model for demonstration;
+  in production they are computed from the connected datasets above. Q1 = smart investment graph (relatedness density × complexity).
+  Q2 = ecosystem treemap, companies sized by patent share and coloured by Technological Revealed Comparative Advantage.
+</div>
+
+<div class="tooltip" id="tip"></div>
+
 <script>
-/* ---------- 8 deep-tech domains × 10 sub-technologies ---------- */
-const DOMAINS = [
-  { key:'ai',    name:'AI & Machine Learning',      base:72 },
-  { key:'qt',    name:'Quantum Technologies',       base:90 },
-  { key:'semi',  name:'Semiconductors & Photonics', base:85 },
-  { key:'bio',   name:'Biotech, Health & SynBio',   base:80 },
-  { key:'mat',   name:'Advanced Materials & Nano',  base:75 },
-  { key:'robo',  name:'Robotics & Autonomy',        base:68 },
-  { key:'space', name:'Space & Aerospace',          base:82 },
-  { key:'energy',name:'Energy & Climate Tech',      base:70 },
+/* ===== 8 deep-tech domains × 10 sub-technologies ===== */
+const DOMAINS=[
+  {key:'ai',name:'AI & Machine Learning',base:72},
+  {key:'qt',name:'Quantum Technologies',base:90},
+  {key:'semi',name:'Semiconductors & Photonics',base:85},
+  {key:'bio',name:'Biotech, Health & SynBio',base:80},
+  {key:'mat',name:'Advanced Materials & Nano',base:75},
+  {key:'robo',name:'Robotics & Autonomy',base:68},
+  {key:'space',name:'Space & Aerospace',base:82},
+  {key:'energy',name:'Energy & Climate Tech',base:70},
 ];
-
-const SUBS = {
-  ai:    ['Foundation models','Reinforcement learning','Edge AI / TinyML','Computer vision','Multimodal models','AI agents & orchestration','Federated learning','Neuromorphic computing','AI safety & alignment','Generative design'],
-  qt:    ['Superconducting qubits','Trapped-ion qubits','Photonic quantum computing','Quantum error correction','Quantum sensing','Quantum communication / QKD','Quantum annealing','Quantum software & SDKs','Cryogenic control','Topological qubits'],
-  semi:  ['GaN power devices','SiC power electronics','Silicon photonics','Advanced packaging / chiplets','EUV lithography','RISC-V architectures','Compound semiconductors','Photonic integrated circuits','MEMS sensors','HBM / MRAM memory'],
-  bio:   ['mRNA therapeutics','CRISPR gene editing','Cell & gene therapy','Synthetic biology / biofoundries','AI drug discovery','Diagnostics & biosensors','Bioprinting / tissue eng.','Microbiome therapeutics','Medical imaging AI','Wearable medical devices'],
-  mat:   ['2D materials (graphene)','Metamaterials','Solid-state electrolytes','Nanocomposites','Perovskites','Carbon-capture sorbents','Bio-based polymers','Superalloys','Quantum dots','Self-healing materials'],
-  robo:  ['Humanoid robotics','Autonomous driving stacks','Logistics / warehouse robots','Surgical robotics','Agricultural robotics','Drone autonomy','SLAM & perception','Soft robotics','Industrial cobots','Robotic actuation'],
-  space: ['Small launch vehicles','Satellite constellations','Earth observation / SAR','In-space manufacturing','Electric propulsion','Space situational awareness','Optical inter-sat links','Reusable launch','Cislunar logistics','Hypersonics'],
-  energy:['Next-gen batteries','Green hydrogen / electrolysers','Long-duration storage','Advanced nuclear / SMR','Fusion energy','Direct air capture','Grid software / VPP','Tandem / perovskite PV','Sustainable aviation fuels','Geothermal (EGS)'],
+const SUBS={
+  ai:['Foundation models','Reinforcement learning','Edge AI / TinyML','Computer vision','Multimodal models','AI agents & orchestration','Federated learning','Neuromorphic computing','AI safety & alignment','Generative design'],
+  qt:['Superconducting qubits','Trapped-ion qubits','Photonic quantum computing','Quantum error correction','Quantum sensing','Quantum communication / QKD','Quantum annealing','Quantum software & SDKs','Cryogenic control','Topological qubits'],
+  semi:['GaN power devices','SiC power electronics','Silicon photonics','Advanced packaging / chiplets','EUV lithography','RISC-V architectures','Compound semiconductors','Photonic ICs','MEMS sensors','HBM / MRAM memory'],
+  bio:['mRNA therapeutics','CRISPR gene editing','Cell & gene therapy','Synthetic biology','AI drug discovery','Diagnostics & biosensors','Bioprinting','Microbiome therapeutics','Medical imaging AI','Wearable medical devices'],
+  mat:['2D materials (graphene)','Metamaterials','Solid-state electrolytes','Nanocomposites','Perovskites','Carbon-capture sorbents','Bio-based polymers','Superalloys','Quantum dots','Self-healing materials'],
+  robo:['Humanoid robotics','Autonomous driving','Logistics robots','Surgical robotics','Agricultural robotics','Drone autonomy','SLAM & perception','Soft robotics','Industrial cobots','Robotic actuation'],
+  space:['Small launch vehicles','Satellite constellations','Earth observation / SAR','In-space manufacturing','Electric propulsion','Space situational aware.','Optical inter-sat links','Reusable launch','Cislunar logistics','Hypersonics'],
+  energy:['Next-gen batteries','Green hydrogen','Long-duration storage','Advanced nuclear / SMR','Fusion energy','Direct air capture','Grid software / VPP','Tandem / perovskite PV','Sustainable aviation fuel','Geothermal (EGS)'],
 };
 
-/* ---------- adjacency between domains (knowledge overlap 0..1) ---------- */
-const ADJ = {};
-function setAdj(a,b,v){ ADJ[a+'|'+b]=v; ADJ[b+'|'+a]=v; }
+/* company pools per domain (illustrative leaders + challengers) */
+const COMPANIES={
+  ai:['NVIDIA','OpenAI','Google DeepMind','Microsoft','Anthropic','Meta AI','Mistral AI','Databricks','Hugging Face','Cohere','Scale AI','Stability AI','Aleph Alpha','xAI','Together AI','DeepL','Adept','Inflection'],
+  qt:['IBM','Google Quantum AI','Quantinuum','IonQ','PsiQuantum','Rigetti','IQM','Pasqal','Atom Computing','Xanadu','D-Wave','Alice & Bob','Quandela','Infleqtion','QuEra','Oxford Quantum','Nord Quantique','Terra Quantum'],
+  semi:['TSMC','Samsung Electronics','Intel','NVIDIA','ASML','Qualcomm','Applied Materials','Lam Research','Tokyo Electron','SK Hynix','Micron','Broadcom','AMD','Infineon','STMicroelectronics','GlobalFoundries','NXP','SMIC'],
+  bio:['Roche','Moderna','BioNTech','Illumina','Vertex','Regeneron','CRISPR Therapeutics','Intellia','Ginkgo Bioworks','Recursion','Insitro','Tempus','Beam Therapeutics','Exscientia','Genmab','10x Genomics','Editas','Novartis'],
+  mat:['QuantumScape','Sila Nano','Solid Power','6K','Graphenea','Carbon','Lyten','Oxford PV','Nanosys','Cambridge GaN','NanoXplore','Twelve','Boston Materials','Heliogen','LanzaTech','Antora'],
+  robo:['Tesla','Boston Dynamics','Figure','Waymo','Intuitive Surgical','ABB','Fanuc','Symbotic','Covariant','Agility Robotics','Skydio','Anduril','Locus Robotics','Cruise','Nuro','1X'],
+  space:['SpaceX','Rocket Lab','Planet Labs','Maxar','ICEYE','Relativity Space','Sierra Space','Firefly','Astranis','Spire','Capella Space','Isar Aerospace','Varda','Axiom Space','Momentus','ABL Space'],
+  energy:['Northvolt','QuantumScape','Form Energy','Commonwealth Fusion','TAE','Helion','Electric Hydrogen','ESS','Redwood Materials','Sunfire','H2 Green Steel','Fervo Energy','Ambri','Antora','Twelve','LanzaTech'],
+};
+
+/* ===== adjacency between domains ===== */
+const ADJ={};
+function setAdj(a,b,v){ADJ[a+'|'+b]=v;ADJ[b+'|'+a]=v;}
 DOMAINS.forEach(d=>setAdj(d.key,d.key,1));
-const pairs = [
-  ['ai','qt',.40],['ai','semi',.62],['ai','bio',.46],['ai','mat',.30],['ai','robo',.72],['ai','space',.42],['ai','energy',.40],
-  ['qt','semi',.66],['qt','mat',.55],['qt','bio',.22],['qt','robo',.20],['qt','space',.30],['qt','energy',.24],
-  ['semi','mat',.60],['semi','robo',.46],['semi','space',.42],['semi','energy',.42],['semi','bio',.30],
-  ['bio','mat',.45],['bio','energy',.34],['bio','robo',.32],['bio','space',.18],
-  ['mat','energy',.62],['mat','robo',.36],['mat','space',.50],
-  ['robo','space',.58],['robo','energy',.40],
-  ['space','energy',.34],
-];
-pairs.forEach(p=>setAdj(p[0],p[1],p[2]));
-function adj(a,b){ return ADJ[a+'|'+b] ?? .15; }
+[['ai','qt',.40],['ai','semi',.62],['ai','bio',.46],['ai','mat',.30],['ai','robo',.72],['ai','space',.42],['ai','energy',.40],
+ ['qt','semi',.66],['qt','mat',.55],['qt','bio',.22],['qt','robo',.20],['qt','space',.30],['qt','energy',.24],
+ ['semi','mat',.60],['semi','robo',.46],['semi','space',.42],['semi','energy',.42],['semi','bio',.30],
+ ['bio','mat',.45],['bio','energy',.34],['bio','robo',.32],['bio','space',.18],
+ ['mat','energy',.62],['mat','robo',.36],['mat','space',.50],
+ ['robo','space',.58],['robo','energy',.40],['space','energy',.34]
+].forEach(p=>setAdj(p[0],p[1],p[2]));
+function adj(a,b){return ADJ[a+'|'+b]??.15;}
 
-/* ---------- deterministic pseudo-random per sub-tech ---------- */
-function hash(str){ let h=2166136261; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619);} return (h>>>0)/4294967295; }
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0)/4294967295;}
 
-/* build the static universe of 80 sub-techs with intrinsic signals */
-const UNIVERSE = [];
-DOMAINS.forEach(d=>{
-  SUBS[d.key].forEach((name,i)=>{
-    const r1=hash(name+'c'), r2=hash(name+'k'), r3=hash(name+'t');
-    UNIVERSE.push({
-      name, domain:d.key, domainName:d.name,
-      complexity: Math.max(34, Math.min(97, Math.round(d.base + (r1*26-13)))),
-      capital:    Math.round(18 + r2*82),     // capital-flow signal
-      talent:     Math.round(20 + r3*78),     // talent scarcity
-    });
-  });
-});
+/* static universe of 80 sub-techs */
+const UNIVERSE=[];
+DOMAINS.forEach(d=>SUBS[d.key].forEach(name=>{
+  const r1=hash(name+'c'),r2=hash(name+'k'),r3=hash(name+'t');
+  UNIVERSE.push({name,domain:d.key,domainName:d.name,
+    complexity:Math.max(34,Math.min(97,Math.round(d.base+(r1*26-13)))),
+    capital:Math.round(18+r2*82), talent:Math.round(20+r3*78)});
+}));
 
-/* regional multipliers on capital flow (flavour, from thesis geography) */
-const GEO_BOOST = {
-  nordics:{energy:1.15,bio:1.12,robo:1.05}, dach:{semi:1.12,robo:1.12,mat:1.08},
-  uk:{ai:1.12,bio:1.1,qt:1.08}, france:{space:1.15,energy:1.08,qt:1.1},
-  us:{ai:1.15,space:1.12,semi:1.08,qt:1.1}, apac:{semi:1.15,mat:1.12,energy:1.08}, global:{},
-};
+const GEO_BOOST={nordics:{energy:1.15,bio:1.12,robo:1.05},dach:{semi:1.12,robo:1.12,mat:1.08},
+  uk:{ai:1.12,bio:1.1,qt:1.08},france:{space:1.15,energy:1.08,qt:1.1},
+  us:{ai:1.15,space:1.12,semi:1.08,qt:1.1},apac:{semi:1.15,mat:1.12,energy:1.08},global:{}};
 
-/* ---------- populate selects ---------- */
-const focusSel=document.getElementById('focus'), pfSel=document.getElementById('pfDomain');
-DOMAINS.forEach(d=>{
-  focusSel.add(new Option(d.name,d.key));
-  pfSel.add(new Option(d.name,d.key));
-});
-focusSel.value='bio';      // MedTech-style default
-pfSel.value='energy';      // 5 climate-tech companies default
-
-/* range labels */
-const rev=document.getElementById('rev'), revVal=document.getElementById('revVal');
+/* selects */
+const focusSel=document.getElementById('focus'),pfSel=document.getElementById('pfDomain');
+DOMAINS.forEach(d=>{focusSel.add(new Option(d.name,d.key));pfSel.add(new Option(d.name,d.key));});
+focusSel.value='semi'; pfSel.value='ai';   // Semiconductors 2026 flagship default
+const rev=document.getElementById('rev'),revVal=document.getElementById('revVal');
 rev.oninput=()=>revVal.textContent='€'+rev.value+'M';
-const pfCount=document.getElementById('pfCount'), pfVal=document.getElementById('pfVal');
+const pfCount=document.getElementById('pfCount'),pfVal=document.getElementById('pfVal');
 pfCount.oninput=()=>pfVal.textContent=pfCount.value;
 
-/* ---------- core model ---------- */
-function compute(){
-  const focus=focusSel.value, pfDom=pfSel.value, pfN=+pfCount.value;
-  const geo=document.getElementById('geo').value, boost=GEO_BOOST[geo]||{};
-  const revCut=+rev.value;
-
-  const pts=UNIVERSE.map(s=>{
-    // relatedness density: 60% to existing portfolio know-how, 40% to target domain
-    const portfolioWeight = pfN>0 ? .6 : 0;
-    const focusWeight = 1 - portfolioWeight;
-    let density = portfolioWeight*adj(pfDom,s.domain) + focusWeight*adj(focus,s.domain);
-    density *= 100;
-
-    let capital = Math.round(s.capital * (boost[s.domain]||1));
-    capital = Math.min(100, capital);
-
-    return {...s, density, capital,
-      inThesis: capital >= revCut*0.6,                       // revenue/depth gate
-      score: 0.42*density + 0.34*s.complexity + 0.24*capital - 0.10*s.talent };
-  });
-
-  // min-max normalise density for a readable spread on x-axis
-  const dmin=Math.min(...pts.map(p=>p.density)), dmax=Math.max(...pts.map(p=>p.density));
-  pts.forEach(p=> p.x = 8 + (p.density-dmin)/(dmax-dmin||1)*86 );
-
-  return {pts, focus, pfDom, pfN, revCut, geo};
-}
-
-/* ---------- rendering ---------- */
-const W=720,H=520,M={l:58,r:24,t:22,b:50};
-const px=x=> M.l + x/100*(W-M.l-M.r);
-const py=y=> H-M.b - y/100*(H-M.t-M.b);
-function qColor(p){
-  const hiD=p.x>=50, hiC=p.complexity>=66;
-  if(!p.inThesis) return 'var(--q4)';
-  if(hiD&&hiC) return 'var(--q1)';
-  if(!hiD&&hiC) return 'var(--q2)';
-  if(hiD&&!hiC) return 'var(--q3)';
-  return 'var(--q4)';
-}
-function verdict(p){
-  if(!p.inThesis) return ['below depth','#b1aca0','#f0eee8'];
-  const hiD=p.x>=50, hiC=p.complexity>=66;
-  if(hiD&&hiC) return ['PRIORITY','#fff','var(--q1)'];
-  if(!hiD&&hiC) return ['frontier','#fff','var(--q2)'];
-  if(hiD&&!hiC) return ['quick win','#fff','var(--q3)'];
-  return ['watch','#777','#ece9e2'];
-}
-
+let SELECTED=null;            // selected sub-tech name for Q2
 const tip=document.getElementById('tip');
-function render(){
-  const m=compute();
-  const focusName=DOMAINS.find(d=>d.key===m.focus).name;
-  const pfName=DOMAINS.find(d=>d.key===m.pfDom).name;
-  const geoTxt=document.getElementById('geo').selectedOptions[0].text;
+function showTip(e,html){tip.innerHTML=html;tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY+14)+'px';tip.style.opacity=1;}
+function hideTip(){tip.style.opacity=0;}
 
-  document.getElementById('thesisLine').innerHTML =
-    `<b>${focusName}</b> · ${geoTxt} · ≥€${m.revCut}M rev · portfolio: <b>${m.pfN}× ${pfName}</b>`;
+/* ===== Q1 model ===== */
+function compute(){
+  const focus=focusSel.value,pfDom=pfSel.value,pfN=+pfCount.value;
+  const boost=GEO_BOOST[document.getElementById('geo').value]||{},revCut=+rev.value;
+  const pts=UNIVERSE.map(s=>{
+    const pw=pfN>0?.6:0, fw=1-pw;
+    let density=(pw*adj(pfDom,s.domain)+fw*adj(focus,s.domain))*100;
+    let capital=Math.min(100,Math.round(s.capital*(boost[s.domain]||1)));
+    return {...s,density,capital,inThesis:capital>=revCut*0.6,
+      score:0.42*density+0.34*s.complexity+0.24*capital-0.10*s.talent};
+  });
+  const dmin=Math.min(...pts.map(p=>p.density)),dmax=Math.max(...pts.map(p=>p.density));
+  pts.forEach(p=>p.x=8+(p.density-dmin)/(dmax-dmin||1)*86);
+  return {pts,focus,pfDom,pfN,revCut};
+}
 
-  // ---- SVG scatter ----
+const W=720,H=500,M={l:56,r:22,t:20,b:48};
+const px=x=>M.l+x/100*(W-M.l-M.r), py=y=>H-M.b-y/100*(H-M.t-M.b);
+function qColor(p){const hD=p.x>=50,hC=p.complexity>=66;
+  if(!p.inThesis)return 'var(--q4)'; if(hD&&hC)return 'var(--q1)'; if(!hD&&hC)return 'var(--q2)'; if(hD&&!hC)return 'var(--q3)'; return 'var(--q4)';}
+function verdict(p){if(!p.inThesis)return['below depth','#b1aca0','#f0eee8'];
+  const hD=p.x>=50,hC=p.complexity>=66;
+  if(hD&&hC)return['PRIORITY','#fff','var(--q1)']; if(!hD&&hC)return['frontier','#fff','var(--q2)'];
+  if(hD&&!hC)return['quick win','#fff','var(--q3)']; return['watch','#777','#ece9e2'];}
+
+function renderQ1(m){
+  const fName=DOMAINS.find(d=>d.key===m.focus).name, pName=DOMAINS.find(d=>d.key===m.pfDom).name;
+  document.getElementById('thesisLine').innerHTML=`<b>${fName}</b> · ≥€${m.revCut}M · portfolio <b>${m.pfN}× ${pName}</b>`;
   let s=`<svg viewBox="0 0 ${W} ${H}" id="svg">`;
-  // quadrant shading
   s+=`<rect x="${px(50)}" y="${py(100)}" width="${px(100)-px(50)}" height="${py(66)-py(100)}" fill="#c84b2f" opacity="0.05"/>`;
-  // gridlines
-  for(let g=0;g<=100;g+=25){
-    s+=`<line x1="${px(g)}" y1="${M.t}" x2="${px(g)}" y2="${H-M.b}" stroke="#eee" />`;
-    s+=`<line x1="${M.l}" y1="${py(g)}" x2="${W-M.r}" y2="${py(g)}" stroke="#eee" />`;
-  }
-  // quadrant divider lines
-  s+=`<line x1="${px(50)}" y1="${M.t}" x2="${px(50)}" y2="${H-M.b}" stroke="#cfcabd" stroke-dasharray="4 4"/>`;
-  s+=`<line x1="${M.l}" y1="${py(66)}" x2="${W-M.r}" y2="${py(66)}" stroke="#cfcabd" stroke-dasharray="4 4"/>`;
-  // axes
-  s+=`<line x1="${M.l}" y1="${H-M.b}" x2="${W-M.r}" y2="${H-M.b}" stroke="#0f0f0f"/>`;
-  s+=`<line x1="${M.l}" y1="${M.t}" x2="${M.l}" y2="${H-M.b}" stroke="#0f0f0f"/>`;
-  // axis labels
-  s+=`<text x="${(M.l+W-M.r)/2}" y="${H-12}" text-anchor="middle" font-family="DM Mono" font-size="11" fill="#444">RELATEDNESS DENSITY →  (proximity to your know-how)</text>`;
-  s+=`<text transform="translate(16,${(M.t+H-M.b)/2}) rotate(-90)" text-anchor="middle" font-family="DM Mono" font-size="11" fill="#444">COMPLEXITY →  (depth of know-how)</text>`;
-  // quadrant captions
+  for(let g=0;g<=100;g+=25){s+=`<line x1="${px(g)}" y1="${M.t}" x2="${px(g)}" y2="${H-M.b}" stroke="#eee"/><line x1="${M.l}" y1="${py(g)}" x2="${W-M.r}" y2="${py(g)}" stroke="#eee"/>`;}
+  s+=`<line x1="${px(50)}" y1="${M.t}" x2="${px(50)}" y2="${H-M.b}" stroke="#cfcabd" stroke-dasharray="4 4"/><line x1="${M.l}" y1="${py(66)}" x2="${W-M.r}" y2="${py(66)}" stroke="#cfcabd" stroke-dasharray="4 4"/>`;
+  s+=`<line x1="${M.l}" y1="${H-M.b}" x2="${W-M.r}" y2="${H-M.b}" stroke="#0f0f0f"/><line x1="${M.l}" y1="${M.t}" x2="${M.l}" y2="${H-M.b}" stroke="#0f0f0f"/>`;
+  s+=`<text x="${(M.l+W-M.r)/2}" y="${H-12}" text-anchor="middle" font-family="DM Mono" font-size="11" fill="#444">RELATEDNESS DENSITY →</text>`;
+  s+=`<text transform="translate(15,${(M.t+H-M.b)/2}) rotate(-90)" text-anchor="middle" font-family="DM Mono" font-size="11" fill="#444">COMPLEXITY →</text>`;
   s+=`<text x="${px(98)}" y="${py(97)}" text-anchor="end" font-family="DM Mono" font-size="9.5" fill="#c84b2f">STRATEGIC ADJACENCY</text>`;
   s+=`<text x="${px(2)+2}" y="${py(97)}" font-family="DM Mono" font-size="9.5" fill="#d97c2a">FRONTIER BETS</text>`;
   s+=`<text x="${px(98)}" y="${py(3)+10}" text-anchor="end" font-family="DM Mono" font-size="9.5" fill="#4a6e42">QUICK ADJACENCIES</text>`;
-  s+=`<text x="${px(2)+2}" y="${py(3)+10}" font-family="DM Mono" font-size="9.5" fill="#9a948a">OUT OF THESIS</text>`;
-
-  // points
-  const sorted=[...m.pts].sort((a,b)=>a.score-b.score); // draw weak first
-  sorted.forEach((p,i)=>{
-    const r=3.5 + p.capital/100*9;
-    const idx=m.pts.indexOf(p);
-    s+=`<circle data-i="${idx}" cx="${px(p.x)}" cy="${py(p.complexity)}" r="${r}" fill="${qColor(p)}" opacity="${p.inThesis?0.82:0.28}" stroke="#fff" stroke-width="1" style="cursor:pointer"/>`;
+  [...m.pts].sort((a,b)=>a.score-b.score).forEach(p=>{
+    const r=3.5+p.capital/100*9, idx=m.pts.indexOf(p), selR=(p.name===SELECTED)?`<circle cx="${px(p.x)}" cy="${py(p.complexity)}" r="${r+4}" fill="none" stroke="#0f0f0f" stroke-width="1.5"/>`:'';
+    s+=`<circle data-i="${idx}" cx="${px(p.x)}" cy="${py(p.complexity)}" r="${r}" fill="${qColor(p)}" opacity="${p.inThesis?0.82:0.28}" stroke="#fff" stroke-width="1" style="cursor:pointer"/>${selR}`;
   });
-
-  // portfolio markers (diamonds) — place on portfolio-domain sub-techs with highest capital
-  const pf=m.pts.filter(p=>p.domain===m.pfDom).sort((a,b)=>b.capital-a.capital).slice(0,m.pfN);
-  pf.forEach(p=>{
-    const x=px(p.x), y=py(p.complexity), d=6;
-    s+=`<path d="M${x} ${y-d} L${x+d} ${y} L${x} ${y+d} L${x-d} ${y} Z" fill="none" stroke="#0f0f0f" stroke-width="1.6"/>`;
-  });
-
+  m.pts.filter(p=>p.domain===m.pfDom).sort((a,b)=>b.capital-a.capital).slice(0,m.pfN).forEach(p=>{
+    const x=px(p.x),y=py(p.complexity),d=6;
+    s+=`<path d="M${x} ${y-d} L${x+d} ${y} L${x} ${y+d} L${x-d} ${y} Z" fill="none" stroke="#0f0f0f" stroke-width="1.6"/>`;});
   s+=`</svg>`;
   document.getElementById('plotWrap').innerHTML=s;
-
-  // tooltips
-  document.querySelectorAll('#svg circle').forEach(c=>{
-    c.addEventListener('mousemove',e=>{
-      const p=m.pts[+c.dataset.i];
-      tip.innerHTML=`<b>${p.name}</b><br>${p.domainName}<br>relatedness ${Math.round(p.x)} · complexity ${p.complexity}<br>capital ${p.capital} · talent scarcity ${p.talent}`;
-      tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY+14)+'px'; tip.style.opacity=1;
-    });
-    c.addEventListener('mouseleave',()=>tip.style.opacity=0);
+  document.querySelectorAll('#svg circle[data-i]').forEach(c=>{
+    const p=m.pts[+c.dataset.i];
+    c.addEventListener('mousemove',e=>showTip(e,`<b>${p.name}</b><br>${p.domainName}<br>relatedness ${Math.round(p.x)} · complexity ${p.complexity}<br>capital ${p.capital} · talent scarcity ${p.talent}`));
+    c.addEventListener('mouseleave',hideTip);
+    c.addEventListener('click',()=>{select(p.name);});
   });
-
-  // ---- ranked list (top 8 in-thesis) ----
   const top=m.pts.filter(p=>p.inThesis).sort((a,b)=>b.score-a.score).slice(0,8);
-  document.getElementById('rankList').innerHTML = top.map((p,i)=>{
-    const v=verdict(p);
-    return `<div class="rank-row">
+  document.getElementById('rankList').innerHTML=top.map((p,i)=>{const v=verdict(p);
+    return `<div class="row r-opp ${p.name===SELECTED?'sel':''}" data-sub="${p.name}">
       <div class="rk-num">${i+1}</div>
       <div><div class="rk-name">${p.name}</div><div class="rk-dom">${p.domainName}</div></div>
-      <div class="rk-metric">${Math.round(p.x)}</div>
-      <div class="rk-metric">${p.complexity}</div>
-      <div><span class="rk-band" style="background:${v[2]};color:${v[1]}">${v[0]}</span></div>
-    </div>`;
-  }).join('') || `<div class="rank-row"><div></div><div style="color:#999">No sub-technology clears the revenue/depth gate — lower the minimum revenue.</div></div>`;
+      <div class="rk-m">${Math.round(p.x)}</div><div class="rk-m">${p.complexity}</div>
+      <div><span class="band" style="background:${v[2]};color:${v[1]}">${v[0]}</span></div></div>`;}).join('')
+    || `<div class="row r-opp" style="cursor:default"><div></div><div style="color:#999">No sub-technology clears the depth gate — lower min revenue.</div></div>`;
+  document.querySelectorAll('#rankList .row[data-sub]').forEach(r=>r.addEventListener('click',()=>select(r.dataset.sub)));
+  return top;
 }
 
-document.getElementById('run').onclick=render;
-render();
+/* ===== squarified treemap ===== */
+function treemap(items,X,Y,Wd,Ht){
+  const total=items.reduce((s,n)=>s+n.value,0), areaAll=Wd*Ht;
+  let nodes=items.map(n=>({...n,area:n.value/total*areaAll})).sort((a,b)=>b.area-a.area);
+  const out=[];
+  (function lay(it,r){
+    if(!it.length||r.w<=0||r.h<=0)return;
+    if(it.length===1){out.push({...it[0],x:r.x,y:r.y,w:r.w,h:r.h});return;}
+    const side=Math.min(r.w,r.h); let row=[],rest=it.slice(),best=Infinity;
+    while(rest.length){const cand=row.concat([rest[0]]);const wa=aspect(cand,side);
+      if(row.length===0||wa<=best){row=cand;rest=rest.slice(1);best=wa;}else break;}
+    const rowArea=row.reduce((s,n)=>s+n.area,0);
+    if(r.w>=r.h){const cw=rowArea/r.h;let cy=r.y;
+      row.forEach(n=>{const ch=n.area/cw;out.push({...n,x:r.x,y:cy,w:cw,h:ch});cy+=ch;});
+      lay(rest,{x:r.x+cw,y:r.y,w:r.w-cw,h:r.h});}
+    else{const rh=rowArea/r.w;let cx=r.x;
+      row.forEach(n=>{const cw=n.area/rh;out.push({...n,x:cx,y:r.y,w:cw,h:rh});cx+=cw;});
+      lay(rest,{x:r.x,y:r.y+rh,w:r.w,h:r.h-rh});}
+  })(nodes,{x:X,y:Y,w:Wd,h:Ht});
+  return out;
+  function aspect(row,side){const s=row.reduce((a,n)=>a+n.area,0),mx=Math.max(...row.map(n=>n.area)),mn=Math.min(...row.map(n=>n.area));
+    return Math.max(side*side*mx/(s*s),s*s/(side*side*mn));}
+}
+function rcaColor(r){ if(r>=1.6)return'#2f6b3f'; if(r>=1.15)return'#4f8a5d'; if(r>=1.0)return'#7faa86';
+  if(r>=0.85)return'#dad7ce'; if(r>=0.6)return'#a8493f'; return'#7a2e2e';}
+function rcaText(r){ return (r>=0.85&&r<1.0)?'#555':'#fff'; }
+
+function companiesFor(domKey,sub){
+  const pool=COMPANIES[domKey];
+  return pool.map((name,idx)=>{
+    const r1=hash(name+sub+'s'),r2=hash(name+sub+'r');
+    const lead=(pool.length-idx)/pool.length;               // earlier = bigger incumbent
+    const share=(0.3+r1*r1*7)*(0.45+lead);                  // skewed: few dominate
+    const rca=+(0.45+r2*2.85).toFixed(2);                   // mostly >1, some <1
+    return {name,value:share,rca,score:rca*1.25+Math.log(share+1)};
+  }).filter(c=>c.value>0);
+}
+
+const TW=720,TH=460;
+function renderQ2(){
+  const sub=SELECTED; if(!sub){document.getElementById('treeWrap').innerHTML='';return;}
+  const u=UNIVERSE.find(s=>s.name===sub); const domKey=u.domain;
+  document.getElementById('treeSubLine').innerHTML=`<b>${sub}</b> · ${u.domainName} ecosystem`;
+  const cos=companiesFor(domKey,sub);
+  const totShare=cos.reduce((s,c)=>s+c.value,0);
+  const cells=treemap(cos,0,0,TW,TH);
+  let s=`<svg viewBox="0 0 ${TW} ${TH}" id="tsvg">`;
+  cells.forEach(c=>{
+    const pct=(c.value/totShare*100), col=rcaColor(c.rca), tc=rcaText(c.rca);
+    s+=`<rect data-co="${c.name}" data-rca="${c.rca}" data-pct="${pct.toFixed(2)}" x="${c.x+0.6}" y="${c.y+0.6}" width="${Math.max(0,c.w-1.2)}" height="${Math.max(0,c.h-1.2)}" fill="${col}" style="cursor:pointer"/>`;
+    if(c.w>52&&c.h>30){
+      const maxch=Math.floor(c.w/6.4); const words=c.name.split(' '); let lines=[],cur='';
+      words.forEach(w=>{ if((cur+' '+w).trim().length<=maxch)cur=(cur+' '+w).trim(); else{ if(cur)lines.push(cur); cur=w; }}); if(cur)lines.push(cur);
+      lines=lines.slice(0,Math.max(1,Math.floor((c.h-14)/12)));
+      let ty=c.y+14;
+      lines.forEach(ln=>{ s+=`<text x="${c.x+5}" y="${ty}" font-family="DM Sans" font-size="10.5" font-weight="600" fill="${tc}" style="pointer-events:none">${ln}</text>`; ty+=12; });
+      if(c.h>ty-c.y+12) s+=`<text x="${c.x+5}" y="${ty+1}" font-family="DM Mono" font-size="10" fill="${tc}" opacity="0.92" style="pointer-events:none">${pct.toFixed(2)}%</text>`;
+    } else if(c.w>30&&c.h>16){
+      s+=`<text x="${c.x+3}" y="${c.y+12}" font-family="DM Mono" font-size="9" fill="${tc}" style="pointer-events:none">${pct.toFixed(1)}%</text>`;
+    }
+  });
+  s+=`</svg>`;
+  document.getElementById('treeWrap').innerHTML=s;
+  document.querySelectorAll('#tsvg rect').forEach(rc=>{
+    rc.addEventListener('mousemove',e=>showTip(e,`<b>${rc.dataset.co}</b><br>RCA ${rc.dataset.rca} ${(+rc.dataset.rca>=1?'· specialized':'· not specialized')}<br>patent share ${rc.dataset.pct}%`));
+    rc.addEventListener('mouseleave',hideTip);
+  });
+  // funnel + shortlist
+  const universe=cos.length*12 + 38;                       // illustrative scale-up
+  document.getElementById('fUniverse').textContent=universe;
+  document.getElementById('fScreen').textContent=Math.round(universe*0.23);
+  document.getElementById('fShort').textContent=Math.min(15,cos.length);
+  const shortlist=[...cos].sort((a,b)=>b.score-a.score).slice(0,8);
+  document.getElementById('coList').innerHTML=shortlist.map((c,i)=>{
+    const pct=(c.value/totShare*100);
+    return `<div class="row r-co" style="cursor:default">
+      <div class="rk-num">${i+1}</div>
+      <div><div class="rk-name">${c.name}</div></div>
+      <div class="rk-m" style="color:${c.rca>=1?'#2f6b3f':'#a8493f'}">${c.rca}</div>
+      <div class="rk-m">${pct.toFixed(1)}%</div></div>`;}).join('');
+}
+
+function select(sub){ SELECTED=sub; render(false); }
+function render(reset){
+  const m=compute();
+  if(reset||!SELECTED || !m.pts.some(p=>p.name===SELECTED&&p.inThesis)){
+    const top=m.pts.filter(p=>p.inThesis).sort((a,b)=>b.score-a.score);
+    SELECTED=top.length?top[0].name:m.pts.sort((a,b)=>b.score-a.score)[0].name;
+  }
+  renderQ1(m); renderQ2();
+}
+document.getElementById('run').onclick=()=>render(true);
+render(true);
 </script>
 </body>
 </html>
