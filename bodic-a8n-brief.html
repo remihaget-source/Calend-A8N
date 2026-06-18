@@ -6,141 +6,277 @@
 <title>Bodic × A8N — Partnership Brief</title>
 <style>
   :root {
-    --ink: #15171a;
+    --ink: #14161a;
     --muted: #6b7280;
-    --line: #e5e7eb;
-    --accent: #1a1a1a;
+    --faint: #9ca3af;
+    --line: #e6e7e9;
     --bg: #ffffff;
+    --paper: #f4f4f2;
+    --bodic: #2563a8;
+    --bodic-bg: #eef4fb;
+    --a8n: #b4530a;
+    --a8n-bg: #fbf2ea;
+    --dark: #14161a;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background: #f5f5f4;
+    background: var(--paper);
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
   .sheet {
-    max-width: 760px;
-    margin: 48px auto;
+    max-width: 880px;
+    margin: 40px auto;
     background: var(--bg);
-    padding: 64px 72px;
     border: 1px solid var(--line);
+    overflow: hidden;
   }
-  .kicker {
-    font-size: 12px;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin: 0 0 8px;
-  }
-  h1 {
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -.01em;
-    margin: 0 0 20px;
-  }
-  .framing {
-    font-size: 16px;
-    color: #2b2f36;
-    margin: 0 0 40px;
-    padding-bottom: 32px;
+  .pad { padding: 0 72px; }
+
+  /* Header */
+  header {
+    padding: 52px 72px 40px;
     border-bottom: 1px solid var(--line);
   }
-  h2 {
-    font-size: 13px;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    margin: 40px 0 20px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid var(--accent);
-  }
-  .point { margin: 0 0 22px; }
-  .point .t {
-    font-weight: 600;
-    font-size: 15px;
-    display: block;
-    margin-bottom: 2px;
-  }
-  .point .d {
-    color: #3a3f47;
-    font-size: 15px;
-  }
-  .decision {
-    margin-top: 48px;
-    padding: 24px 28px;
-    background: #15171a;
-    color: #f5f5f4;
-  }
-  .decision .label {
+  .kicker {
     font-size: 11px;
-    letter-spacing: .14em;
+    letter-spacing: .18em;
     text-transform: uppercase;
-    color: #9aa0a6;
-    margin: 0 0 8px;
+    color: var(--faint);
+    margin: 0 0 14px;
   }
-  .decision p { margin: 0; font-size: 16px; }
-  @media (max-width: 600px) {
-    .sheet { padding: 40px 24px; margin: 0; border: none; }
+  h1 {
+    font-size: 30px;
+    font-weight: 650;
+    letter-spacing: -.015em;
+    margin: 0 0 6px;
+    line-height: 1.15;
+  }
+  h1 .x { color: var(--faint); font-weight: 400; margin: 0 6px; }
+  .sub { font-size: 15px; color: var(--muted); margin: 0; }
+
+  /* Section titles */
+  .section-label {
+    font-size: 12px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 0 0 4px;
+  }
+  h2 {
+    font-size: 19px;
+    font-weight: 620;
+    letter-spacing: -.01em;
+    margin: 0 0 24px;
+  }
+  .block { padding: 44px 72px; border-bottom: 1px solid var(--line); }
+  .block.tint { background: #fafafa; }
+
+  /* Thesis: inside / outside */
+  .duo {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr;
+    align-items: stretch;
+    gap: 0;
+  }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 24px;
+  }
+  .card.bodic { background: var(--bodic-bg); border-color: #d6e4f5; }
+  .card.a8n { background: var(--a8n-bg); border-color: #f0ddc9; }
+  .card .name { font-weight: 680; font-size: 16px; margin: 0 0 2px; }
+  .card.bodic .name { color: var(--bodic); }
+  .card.a8n .name { color: var(--a8n); }
+  .card .role { font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); margin: 0 0 12px; }
+  .card .desc { font-size: 14px; color: #353a42; margin: 0 0 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    font-size: 11.5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.7);
+    border: 1px solid rgba(0,0,0,.06);
+    color: #4b5159;
+  }
+  .joiner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--faint);
+    font-size: 20px;
+  }
+  .thesis-line {
+    margin: 22px 0 0;
+    font-size: 15px;
+    text-align: center;
+    color: #2b2f36;
+  }
+  .thesis-line b { color: var(--ink); }
+
+  /* Axis points */
+  .points { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 36px; }
+  .point { padding-left: 16px; border-left: 2px solid var(--line); }
+  .point.b { border-color: var(--bodic); }
+  .point.a { border-color: var(--a8n); }
+  .point .t { font-weight: 620; font-size: 14.5px; display: block; margin-bottom: 3px; }
+  .point .d { color: #3a3f47; font-size: 14px; }
+
+  /* Direction / phasing */
+  .phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .phase {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 20px 22px;
+    position: relative;
+  }
+  .phase .n {
+    font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    color: var(--faint); text-transform: uppercase; margin: 0 0 10px;
+  }
+  .phase .h { font-weight: 640; font-size: 15px; margin: 0 0 6px; }
+  .phase .p { font-size: 13.5px; color: #4b5159; margin: 0; }
+  .phase .when { font-size: 11.5px; color: var(--a8n); margin-top: 12px; font-weight: 600; letter-spacing: .03em; }
+
+  /* Decision */
+  .decision { background: var(--dark); color: #f4f4f2; padding: 40px 72px; }
+  .decision .label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #8b9197; margin: 0 0 12px; }
+  .decision p { margin: 0; font-size: 18px; line-height: 1.5; letter-spacing: -.005em; }
+  .decision .who { margin-top: 18px; font-size: 12.5px; color: #767c83; }
+
+  @media (max-width: 720px) {
+    .pad, header, .block, .decision { padding-left: 26px; padding-right: 26px; }
+    .duo { grid-template-columns: 1fr; }
+    .joiner { padding: 8px 0; }
+    .points, .phases { grid-template-columns: 1fr; }
+    .sheet { margin: 0; border: none; }
   }
 </style>
 </head>
 <body>
   <div class="sheet">
-    <p class="kicker">Pre-Meeting Brief · Confidential</p>
-    <h1>Bodic × A8N Intelligence</h1>
 
-    <p class="framing">
-      Bodic controls the fund's internal system of record; A8N controls the external
-      structural intelligence that explains where conviction should come from. The
-      question is not whether the datasets are complementary — they are — but how tightly
-      to wire them and how fast to sell the combined stack into a market both sides
-      already reach through Armen and Jolt.
-    </p>
+    <header>
+      <p class="kicker">Pre-Meeting Brief · Confidential</p>
+      <h1>Bodic <span class="x">×</span> A8N Intelligence</h1>
+      <p class="sub">Jeanjean (Bodic) · Schmitt (Jolt) · Balland (A8N) · Haget (A8N)</p>
+    </header>
 
-    <h2>Axis 1 — Technical Integration</h2>
+    <!-- THESIS -->
+    <section class="block">
+      <p class="section-label">The Thesis</p>
+      <h2>One stack, two halves of the fund</h2>
+      <div class="duo">
+        <div class="card bodic">
+          <p class="name">Bodic</p>
+          <p class="role">The inside</p>
+          <p class="desc">The fund's internal system of record — its operating infrastructure.</p>
+          <div class="chips">
+            <span class="chip">CRM</span><span class="chip">Deal flow</span>
+            <span class="chip">LP portal</span><span class="chip">Middle office</span>
+            <span class="chip">Golden Source</span><span class="chip">GEO Profiles</span>
+          </div>
+        </div>
+        <div class="joiner">+</div>
+        <div class="card a8n">
+          <p class="name">A8N · Argos</p>
+          <p class="role">The outside</p>
+          <p class="desc">External structural intelligence — where conviction comes from.</p>
+          <div class="chips">
+            <span class="chip">6M companies</span><span class="chip">8.2M executives</span>
+            <span class="chip">25M patents</span><span class="chip">50+ ecosystems</span>
+            <span class="chip">Complexity science</span>
+          </div>
+        </div>
+      </div>
+      <p class="thesis-line">The datasets are complementary. The real question is <b>how tightly to wire them</b> and <b>how fast to sell the combined stack</b>.</p>
+    </section>
 
-    <div class="point">
-      <span class="t">Golden Source enrichment via API</span>
-      <span class="d">A8N writes company, executive, patent, and ecosystem-positioning records into Bodic's master data layer, so every module inherits external data without a separate integration.</span>
-    </div>
-    <div class="point">
-      <span class="t">Signals in the BI layer</span>
-      <span class="d">A8N pushes complexity-derived signals — relatedness, ecosystem momentum, competitive density — as native dashboard fields, so a partner sees external conviction drivers next to internal portfolio metrics.</span>
-    </div>
-    <div class="point">
-      <span class="t">A8N as an MCP-queryable source</span>
-      <span class="d">Bodic's AI agents query A8N in natural language at runtime, so an agent answering "which targets sit in an accelerating ecosystem" pulls live intelligence instead of stale extracts.</span>
-    </div>
-    <div class="point">
-      <span class="t">GEO Profiles × A8N</span>
-      <span class="d">Each fund's GEO Profile binds to its A8N ecosystem footprint, making the fund's AI-facing identity a verifiable market claim rather than a self-asserted description.</span>
-    </div>
+    <!-- AXIS 1 -->
+    <section class="block tint">
+      <p class="section-label">Axis 1</p>
+      <h2>Technical integration — how they connect</h2>
+      <div class="points">
+        <div class="point a">
+          <span class="t">Golden Source enrichment via API</span>
+          <span class="d">A8N writes company, executive, patent, and ecosystem records into Bodic's master data layer, so every module inherits external data without a separate integration.</span>
+        </div>
+        <div class="point a">
+          <span class="t">Signals in the BI layer</span>
+          <span class="d">Complexity-derived signals — relatedness, ecosystem momentum, competitive density — land as native dashboard fields next to internal portfolio metrics.</span>
+        </div>
+        <div class="point a">
+          <span class="t">A8N as an MCP-queryable source</span>
+          <span class="d">Bodic's AI agents query A8N in natural language at runtime, pulling live intelligence instead of stale extracts.</span>
+        </div>
+        <div class="point a">
+          <span class="t">GEO Profiles × A8N</span>
+          <span class="d">A fund's GEO Profile binds to its A8N ecosystem footprint, turning its AI-facing identity into a verifiable claim.</span>
+        </div>
+      </div>
+    </section>
 
-    <h2>Axis 2 — Commercial Development</h2>
+    <!-- AXIS 2 -->
+    <section class="block">
+      <p class="section-label">Axis 2</p>
+      <h2>Commercial development — how they go to market</h2>
+      <div class="points">
+        <div class="point b">
+          <span class="t">Armen portfolio as first market</span>
+          <span class="d">Run the joint product into Jolt, RGreen, Chorus, Signal, and Vendis first — five reference accounts both sides already reach.</span>
+        </div>
+        <div class="point b">
+          <span class="t">Bundled Digital + Intelligence Audit</span>
+          <span class="d">One onboarding engagement diagnosing both a fund's data readiness and its sourcing edge.</span>
+        </div>
+        <div class="point b">
+          <span class="t">Fund II fundraising narrative</span>
+          <span class="d">GPs tell LPs that conviction is sourced from external structure and executed on instrumented infrastructure — a pitch line, not a cost.</span>
+        </div>
+        <div class="point b">
+          <span class="t">Bodic Connect + SIAI 2026</span>
+          <span class="d">List A8N in Connect and announce at SIAI 2026 — a dated launch and a channel into every fund already evaluating Bodic.</span>
+        </div>
+      </div>
+    </section>
 
-    <div class="point">
-      <span class="t">Armen portfolio as first market</span>
-      <span class="d">Run the joint product into Jolt, RGreen, Chorus, Signal, and Vendis first, proving the partnership on five reference accounts both sides already have standing to approach.</span>
-    </div>
-    <div class="point">
-      <span class="t">Bundled Digital + Intelligence Audit</span>
-      <span class="d">Package Bodic's infrastructure audit with A8N's positioning audit as one onboarding engagement, so a new fund buys a single diagnostic of both its data readiness and its sourcing edge.</span>
-    </div>
-    <div class="point">
-      <span class="t">Fund II fundraising narrative</span>
-      <span class="d">Equip GPs to tell LPs that conviction is sourced from external economic structure and executed on instrumented infrastructure, making the stack a differentiated pitch line, not a back-office cost.</span>
-    </div>
-    <div class="point">
-      <span class="t">Bodic Connect + SIAI 2026</span>
-      <span class="d">List A8N in Bodic Connect and stage the joint announcement at SIAI 2026, giving the integration a dated public launch and a channel into every fund already evaluating Bodic.</span>
-    </div>
+    <!-- DIRECTION -->
+    <section class="block tint">
+      <p class="section-label">Where this goes</p>
+      <h2>A sequence, not a leap</h2>
+      <div class="phases">
+        <div class="phase">
+          <p class="n">Phase 1 · Prove</p>
+          <p class="h">Wire & validate</p>
+          <p class="p">API enrichment into Golden Source, live inside one Armen fund. Bundled audit as the entry product.</p>
+          <p class="when">Now → SIAI 2026</p>
+        </div>
+        <div class="phase">
+          <p class="n">Phase 2 · Embed</p>
+          <p class="h">Signals & agents</p>
+          <p class="p">A8N signals in the BI layer and MCP access for Bodic's agents. Roll across the five-fund portfolio.</p>
+          <p class="when">Post-launch</p>
+        </div>
+        <div class="phase">
+          <p class="n">Phase 3 · Scale</p>
+          <p class="h">Stack as standard</p>
+          <p class="p">GEO × A8N as the default identity layer; Connect listing drives the combined stack to the wider market.</p>
+          <p class="when">Fund II cycle</p>
+        </div>
+      </div>
+    </section>
 
-    <div class="decision">
-      <p class="label">Decision for the room</p>
+    <!-- DECISION -->
+    <section class="decision">
+      <p class="label">The decision for the room</p>
       <p>Deep native integration with a shared roadmap and joint go-to-market — or a listed Connect partner with a defined API contract and independent sales? And which does the Fund II timeline actually require?</p>
-    </div>
+      <p class="who">To resolve between Jeanjean, Schmitt, Balland, and Haget.</p>
+    </section>
+
   </div>
 </body>
 </html>
