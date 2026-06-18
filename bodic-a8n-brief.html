@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bodic × A8N Partnership Brief</title>
+<style>
+  :root {
+    --ink: #14161a;
+    --muted: #6b7280;
+    --faint: #9ca3af;
+    --line: #e6e7e9;
+    --bg: #ffffff;
+    --paper: #f4f4f2;
+    --bodic: #2563a8;
+    --bodic-bg: #eef4fb;
+    --a8n: #b4530a;
+    --a8n-bg: #fbf2ea;
+    --dark: #14161a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .sheet {
+    max-width: 880px;
+    margin: 40px auto;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .pad { padding: 0 72px; }
+
+  /* Header */
+  header {
+    padding: 52px 72px 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  .kicker {
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-size: 30px;
+    font-weight: 650;
+    letter-spacing: -.015em;
+    margin: 0 0 6px;
+    line-height: 1.15;
+  }
+  h1 .x { color: var(--faint); font-weight: 400; margin: 0 6px; }
+  .sub { font-size: 15px; color: var(--muted); margin: 0; }
+
+  /* Section titles */
+  .section-label {
+    font-size: 12px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 0 0 4px;
+  }
+  h2 {
+    font-size: 19px;
+    font-weight: 620;
+    letter-spacing: -.01em;
+    margin: 0 0 24px;
+  }
+  .block { padding: 44px 72px; border-bottom: 1px solid var(--line); }
+  .block.tint { background: #fafafa; }
+
+  /* Thesis: inside / outside */
+  .duo {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr;
+    align-items: stretch;
+    gap: 0;
+  }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 24px;
+  }
+  .card.bodic { background: var(--bodic-bg); border-color: #d6e4f5; }
+  .card.a8n { background: var(--a8n-bg); border-color: #f0ddc9; }
+  .card .name { font-weight: 680; font-size: 16px; margin: 0 0 2px; }
+  .card.bodic .name { color: var(--bodic); }
+  .card.a8n .name { color: var(--a8n); }
+  .card .role { font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); margin: 0 0 12px; }
+  .card .desc { font-size: 14px; color: #353a42; margin: 0 0 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    font-size: 11.5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.7);
+    border: 1px solid rgba(0,0,0,.06);
+    color: #4b5159;
+  }
+  .joiner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--faint);
+    font-size: 20px;
+  }
+  .thesis-line {
+    margin: 22px 0 0;
+    font-size: 15px;
+    text-align: center;
+    color: #2b2f36;
+  }
+  .thesis-line b { color: var(--ink); }
+
+  /* Axis points */
+  .points { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 36px; }
+  .point { padding-left: 16px; border-left: 2px solid var(--line); }
+  .point.b { border-color: var(--bodic); }
+  .point.a { border-color: var(--a8n); }
+  .point .t { font-weight: 620; font-size: 14.5px; display: block; margin-bottom: 3px; }
+  .point .d { color: #3a3f47; font-size: 14px; }
+
+  /* Direction / phasing */
+  .phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .phase {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 20px 22px;
+    position: relative;
+  }
+  .phase .n {
+    font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    color: var(--faint); text-transform: uppercase; margin: 0 0 10px;
+  }
+  .phase .h { font-weight: 640; font-size: 15px; margin: 0 0 6px; }
+  .phase .p { font-size: 13.5px; color: #4b5159; margin: 0; }
+  .phase .when { font-size: 11.5px; color: var(--a8n); margin-top: 12px; font-weight: 600; letter-spacing: .03em; }
+
+  /* Decision */
+  .decision { background: var(--dark); color: #f4f4f2; padding: 40px 72px; }
+  .decision .label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #8b9197; margin: 0 0 12px; }
+  .decision p { margin: 0; font-size: 18px; line-height: 1.5; letter-spacing: -.005em; }
+  .decision .who { margin-top: 18px; font-size: 12.5px; color: #767c83; }
+
+  @media (max-width: 720px) {
+    .pad, header, .block, .decision { padding-left: 26px; padding-right: 26px; }
+    .duo { grid-template-columns: 1fr; }
+    .joiner { padding: 8px 0; }
+    .points, .phases { grid-template-columns: 1fr; }
+    .sheet { margin: 0; border: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+
+    <header>
+      <p class="kicker">Pre-Meeting Brief · Confidential</p>
+      <h1>Bodic <span class="x">×</span> A8N Intelligence <span class="x">×</span> Jolt Ninja</h1>
+    </header>
+
+    <!-- THESIS -->
+    <section class="block">
+      <p class="section-label">The Thesis</p>
+      <h2>One stack, two halves of the fund</h2>
+      <div class="duo">
+        <div class="card bodic">
+          <p class="name">Bodic</p>
+          <p class="role">The inside</p>
+          <p class="desc">The fund's internal system of record, its operating infrastructure.</p>
+          <div class="chips">
+            <span class="chip">CRM</span><span class="chip">Deal flow</span>
+            <span class="chip">LP portal</span><span class="chip">Middle office</span>
+            <span class="chip">Golden Source</span><span class="chip">GEO Profiles</span>
+          </div>
+        </div>
+        <div class="joiner">+</div>
+        <div class="card a8n">
+          <p class="name">A8N</p>
+          <p class="role">The outside</p>
+          <p class="desc">External structural intelligence, where conviction comes from.</p>
+          <div class="chips">
+            <span class="chip">5M companies</span><span class="chip">80M patents</span>
+            <span class="chip">250M research papers</span><span class="chip">Thousands of ecosystems</span>
+            <span class="chip">Complexity science</span>
+          </div>
+        </div>
+      </div>
+      <p class="thesis-line">The datasets are complementary. The real question is <b>how tightly to wire them</b> and <b>how fast to sell the combined stack</b>.</p>
+    </section>
+
+    <!-- AXIS 1 -->
+    <section class="block tint">
+      <p class="section-label">Axis 1</p>
+      <h2>Technical integration, how they connect</h2>
+      <div class="points">
+        <div class="point a">
+          <span class="t">Golden Source enrichment via API</span>
+          <span class="d">A8N bring an intelligence module that connect with the proprietary datas and bring strategic analyses to capital allocation.</span>
+        </div>
+        <div class="point a">
+          <span class="t">Signals in the BI layer</span>
+          <span class="d">Intelligence layer with A8N enrich the internal portfolio metrics.</span>
+        </div>
+        <div class="point a">
+          <span class="t">A8N as an MCP-queryable source</span>
+          <span class="d">AI Agent query Blaise + Bodic + intelligence from A8N.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- AXIS 2 -->
+    <section class="block">
+      <p class="section-label">Axis 2</p>
+      <h2>Commercial development, how they go to market</h2>
+      <div class="points">
+        <div class="point b">
+          <span class="t">Armen portfolio as first market</span>
+          <span class="d">Realize Macro allocation analyses & Deal sourcing.</span>
+        </div>
+        <div class="point b">
+          <span class="t">Bundled Digital + Intelligence Audit</span>
+          <span class="d">One onboarding engagement diagnosing both a fund's data readiness and its sourcing edge.</span>
+        </div>
+        <div class="point b">
+          <span class="t">Fund II fundraising narrative</span>
+          <span class="d">GPs tells LPs that conviction is approved by evidence base analyse (Harvard methodologies).</span>
+        </div>
+        <div class="point b">
+          <span class="t">Bodic Connect + SIAI 2026</span>
+          <span class="d">Push Intelligence audit and decision layer to all Connect & SIAI people.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- DECISION -->
+    <section class="decision">
+      <p class="label">The decision for the room</p>
+      <p>Deep native integration with a shared roadmap and joint go-to-market.</p>
+      <p class="who">To resolve between Jeanjean, Schmitt, Balland, and Haget.</p>
+    </section>
+
+  </div>
+</body>
+</html>
