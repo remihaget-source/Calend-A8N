@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A8N × Bodic — Partnership Convergence</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0f0f0f; --paper: #f7f6f2; --rule: #d8d5cc;
+    --accent: #c84b2f; --accent-soft: #f5e8e5;
+    --tech: #2f6fc8; --tech-soft: #e6edf6;
+    --comm: #c84b2f; --comm-soft: #f5e8e5;
+    --muted: #6c6760;
+    --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+  }
+  body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 13px; line-height: 1.55; padding: 36px 28px 48px; max-width: 1120px; margin: 0 auto; }
+
+  /* Header */
+  .header { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 20px 0 16px; margin-bottom: 22px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 5px; }
+  h1 { font-size: 26px; font-weight: 600; letter-spacing: -.03em; line-height: 1.08; }
+  .subline { font-size: 11.5px; color: var(--muted); margin-top: 5px; }
+  .header-right { text-align: right; font-family: var(--mono); font-size: 10px; color: #888; line-height: 1.9; white-space: nowrap; }
+
+  /* Recap banner */
+  .recap { background: var(--ink); color: var(--paper); border-radius: 5px; padding: 22px 26px; margin-bottom: 26px; }
+  .recap .tag { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #d97c2a; margin-bottom: 9px; }
+  .recap h2 { font-size: 21px; font-weight: 600; letter-spacing: -.02em; line-height: 1.2; margin-bottom: 10px; }
+  .recap h2 em { font-style: normal; color: #e8a07f; }
+  .recap p { font-size: 13px; color: #cfccc4; max-width: 86ch; line-height: 1.6; }
+  .recap p b { color: var(--paper); font-weight: 600; }
+
+  /* Persona strip */
+  .personas { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 5px; overflow: hidden; margin-bottom: 26px; }
+  .persona { background: var(--paper); padding: 14px 18px; }
+  .persona .who { font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .persona .pain { font-size: 12px; color: var(--ink); }
+  .persona .pain b { font-weight: 600; }
+
+  /* Two-column convergence */
+  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 26px; align-items: stretch; }
+  .col { border: 1px solid var(--rule); border-radius: 6px; background: #fff; overflow: hidden; display: flex; flex-direction: column; }
+  .col-head { padding: 16px 20px 14px; border-bottom: 1px solid var(--rule); }
+  .col-num { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+  .col-title { font-size: 18px; font-weight: 600; letter-spacing: -.02em; margin-top: 3px; }
+  .col-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .col.tech .col-head { border-top: 4px solid var(--tech); }
+  .col.tech .col-num { color: var(--tech); }
+  .col.comm .col-head { border-top: 4px solid var(--comm); }
+  .col.comm .col-num { color: var(--comm); }
+
+  .bullets { padding: 8px 20px 6px; flex: 1; }
+  .bullet { padding: 12px 0; border-bottom: 1px dashed var(--rule); }
+  .bullet:last-child { border-bottom: none; }
+  .bullet .bt { font-size: 13px; font-weight: 600; letter-spacing: -.01em; display: flex; align-items: baseline; gap: 8px; }
+  .bullet .bt .ix { font-family: var(--mono); font-size: 10px; font-weight: 500; }
+  .col.tech .bullet .bt .ix { color: var(--tech); }
+  .col.comm .bullet .bt .ix { color: var(--comm); }
+  .bullet .bd { font-size: 11.5px; color: var(--muted); margin-top: 4px; padding-left: 22px; line-height: 1.5; }
+
+  .col-foot { padding: 14px 20px 16px; margin-top: auto; }
+  .col.tech .col-foot { background: var(--tech-soft); }
+  .col.comm .col-foot { background: var(--comm-soft); }
+  .col-foot .lbl { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .col-foot .sent { font-size: 13.5px; font-weight: 600; letter-spacing: -.01em; line-height: 1.4; }
+
+  /* Thesis */
+  .thesis { border: 1px solid var(--rule); border-radius: 6px; background: #fff; padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
+  .thesis .side { padding: 20px 24px; }
+  .thesis .side.inside { border-right: 1px solid var(--rule); }
+  .thesis .side .h { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; }
+  .thesis .side.inside .h { color: var(--comm); }
+  .thesis .side.outside .h { color: var(--tech); }
+  .thesis .side .t { font-size: 14px; font-weight: 600; letter-spacing: -.01em; line-height: 1.35; }
+  .thesis .side .t span { color: var(--muted); font-weight: 400; }
+  .pitch { grid-column: 1 / -1; border-top: 1px solid var(--rule); background: var(--ink); color: var(--paper); padding: 22px 24px; border-radius: 0 0 6px 6px; }
+  .pitch .lbl { font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: #d97c2a; margin-bottom: 8px; }
+  .pitch q { font-size: 18px; font-weight: 600; letter-spacing: -.02em; quotes: "\201C" "\201D"; line-height: 1.35; }
+  .pitch q b { color: #e8a07f; }
+
+  .footnote { font-family: var(--mono); font-size: 9.5px; color: #aaa; text-align: center; margin-top: 22px; letter-spacing: .04em; }
+
+  @media (max-width: 760px) {
+    .columns, .personas, .thesis { grid-template-columns: 1fr; }
+    .thesis .side.inside { border-right: none; border-bottom: 1px solid var(--rule); }
+  }
+  @media print {
+    body { padding: 0; }
+    .col, .thesis { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="eyebrow">A8N · Argos Intelligence — Macro Deal-Sourcing</div>
+    <h1>A8N × Bodic — Building the Full-Stack Partnership</h1>
+    <div class="subline">Intelligence, data &amp; AI for GPs and LPs — to raise conviction, performance and returns</div>
+  </div>
+  <div class="header-right">Working session · June 2026<br>Bodic · Joe Capital · Peter Alexander · A8N<br>Sovereign intelligence stack</div>
+</div>
+
+<!-- RECAP -->
+<div class="recap">
+  <div class="tag">Where we are today</div>
+  <h2>Here is the current situation. <em>How do we build a partnership?</em></h2>
+  <p>
+    <b>Bodic structures what a fund knows about itself</b> — operations, CRM, deal flow, LP portal, the Golden Source of every entity in the fund's universe.
+    <b>A8N / Argos structures what a fund should know about the world</b> — economic-complexity signal across 6M companies, 8.2M executives and 25M patents.
+    Today these live in two separate tabs. The GP wants one view; the LP wants one reality check. The opportunity is to merge the inside and the outside into a single, sovereign intelligence stack — <b>two products, one ecosystem, one trusted conversation</b>.
+  </p>
+</div>
+
+<!-- PERSONAS -->
+<div class="personas">
+  <div class="persona">
+    <div class="who">GP CEO — mid-market European PE</div>
+    <div class="pain">Deploying €40M on conviction built from consultant reports. <b>Needs structural, quantitative evidence</b> that a sector is accelerating — surfaced in context, inside the deal-flow view.</div>
+  </div>
+  <div class="persona">
+    <div class="who">LP Managing Partner — 15 GPs across Europe</div>
+    <div class="pain">Relies entirely on what each GP reports. <b>Needs an independent benchmark</b> to verify whether a GP's thesis is ahead of the ecosystem curve — or just riding the cycle.</div>
+  </div>
+</div>
+
+<!-- TWO COLUMNS -->
+<div class="columns">
+
+  <!-- TECH -->
+  <div class="col tech">
+    <div class="col-head">
+      <div class="col-num">Part 1 — The Tech</div>
+      <div class="col-title">Technical Convergence</div>
+      <div class="col-sub">Argos signal plugs into Bodic's sovereign infrastructure — connector, not rebuild</div>
+    </div>
+    <div class="bullets">
+      <div class="bullet">
+        <div class="bt"><span class="ix">01</span> API enrichment into the Golden Source</div>
+        <div class="bd">Argos exposes a REST API; Bodic's pipeline pulls it on entity match (company + country + sector). External signal lands in the canonical record — a data connector, no deep integration.</div>
+      </div>
+      <div class="bullet">
+        <div class="bt"><span class="ix">02</span> Power BI layer via Drivn</div>
+        <div class="bd">Complexity scores and ecosystem metrics are structured data — surfaced directly as Power BI datasets inside Bodic's dashboards. A clean three-way build: Bodic · Drivn · Argos.</div>
+      </div>
+      <div class="bullet">
+        <div class="bt"><span class="ix">03</span> MCP integration via GEO profiles</div>
+        <div class="bd">Bodic already ships <code>/.well-known/mcp/metadata.json</code>. Argos becomes a sovereign data source a GP's AI agent can query: "what's the structural outlook for this market?"</div>
+      </div>
+      <div class="bullet">
+        <div class="bt"><span class="ix">04</span> Sovereign stack alignment</div>
+        <div class="bd">Argos (Jolt) and Bodic (Clever Cloud, Thales, French sovereignty) are both European-sovereign — a credible, differentiated answer to DORA and AI-Act constraints.</div>
+      </div>
+    </div>
+    <div class="col-foot">
+      <div class="lbl">In one sentence</div>
+      <div class="sent">Argos becomes the external-signal connector inside Bodic's sovereign stack — one canonical record, one dashboard, one AI-queryable source of structural truth.</div>
+    </div>
+  </div>
+
+  <!-- COMMERCIAL -->
+  <div class="col comm">
+    <div class="col-head">
+      <div class="col-num">Part 2 — The Commercial</div>
+      <div class="col-title">Commercial Convergence</div>
+      <div class="col-sub">Each company's client base is the other's warmest prospect list</div>
+    </div>
+    <div class="bullets">
+      <div class="bullet">
+        <div class="bt"><span class="ix">01</span> Joint GTM into the Armen GP portfolio</div>
+        <div class="bd">RGreen, Chorus, Jolt, Signal, Vendis — Bodic runs their ops, Argos wants them as intelligence clients. One conversation, two products, one invoice if structured right.</div>
+      </div>
+      <div class="bullet">
+        <div class="bt"><span class="ix">02</span> Digital Audit → Intelligence Audit</div>
+        <div class="bd">After Bodic's 7-day digital audit structures the internal data, the logical next question is "what external signals flow in?" — that is Argos's entry. A bundled offering.</div>
+      </div>
+      <div class="bullet">
+        <div class="bt"><span class="ix">03</span> Co-selling to new GPs</div>
+        <div class="bd">Bodic targets any European alternative manager; Argos targets GPs and SWFs. The overlap is complete — one intro meeting, two complementary products, lower CAC for both.</div>
+      </div>
+      <div class="bullet">
+        <div class="bt"><span class="ix">04</span> SIAI 2026 as joint platform</div>
+        <div class="bd">Co-presenting puts economic-complexity science in front of every Bodic GP client in one room: "sovereign infrastructure + sovereign intelligence — the full stack."</div>
+      </div>
+      <div class="bullet">
+        <div class="bt"><span class="ix">05</span> LP credibility play</div>
+        <div class="bd">"Our deal flow is enriched with Harvard complexity data, our ops run sovereign, our AI agents draw on structured profiles." Bodic + Argos becomes a Fund II fundraising asset.</div>
+      </div>
+    </div>
+    <div class="col-foot">
+      <div class="lbl">In one sentence</div>
+      <div class="sent">One shared distribution channel converts each firm's clients into the other's pipeline — bundled audits, co-sell, and SIAI turn two products into a single trusted ecosystem.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- THESIS -->
+<div class="thesis">
+  <div class="side inside">
+    <div class="h">Bodic — the inside</div>
+    <div class="t">Structures what a fund knows about itself. <span>CRM, deal flow, LP portal, Golden Source.</span></div>
+  </div>
+  <div class="side outside">
+    <div class="h">Argos — the outside</div>
+    <div class="t">Structures what a fund should know about the world. <span>Economic-complexity signal at scale.</span></div>
+  </div>
+  <div class="pitch">
+    <div class="lbl">The single convergence thesis</div>
+    <q>You own the inside of the fund. We own the outside. <b>Let's build the full stack together.</b></q>
+  </div>
+</div>
+
+<div class="footnote">Neither is complete without the other — the GP needs both to decide, the LP needs both to evaluate. A8N × Bodic · Sovereign intelligence for GPs &amp; LPs.</div>
+
+</body>
+</html>
