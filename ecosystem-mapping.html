@@ -22,11 +22,6 @@
   .subline{ font-size:13.5px; color:#444; margin-top:6px; max-width:560px; font-weight:500; }
   .steps{ font-family:var(--mono); font-size:11px; color:var(--accent); margin-top:9px; letter-spacing:.02em; }
 
-  /* one-line method strip (replaces noisy dataset grid) */
-  .method{ display:flex; flex-wrap:wrap; gap:6px 20px; font-family:var(--mono); font-size:10.5px; color:#777; padding:11px 0; border-bottom:1px solid var(--rule); margin-bottom:18px; }
-  .method b{ color:var(--ink); font-weight:500; }
-  .method .sep{ color:var(--accent); }
-
   .uses{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:6px; overflow:hidden; margin-bottom:24px; }
   .use-cell{ background:var(--card); padding:13px 16px; }
   .use-cell h4{ font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; }
@@ -86,7 +81,6 @@
   .tooltip b{ color:#ffb59f; }
 
   .qblock{ margin-bottom:34px; }
-  .footnote{ margin-top:8px; font-family:var(--mono); font-size:10px; color:#aaa; line-height:1.7; border-top:1px solid var(--rule); padding-top:14px; }
 </style>
 </head>
 <body>
@@ -94,20 +88,9 @@
 <div class="header">
   <div>
     <div class="brand">A8N&nbsp;&nbsp;INTELLIGENCE</div>
-    <div class="eyebrow">Macro Allocation · Deep-Tech Ecosystem Mapping</div>
-    <h1>From a thesis to two answers</h1>
     <div class="subline">Lens for your capital allocation in technology.</div>
     <div class="steps">1 · Define your fund thesis &nbsp;&nbsp;→&nbsp;&nbsp; 2 · Share your current portfolio &amp; deal flow</div>
   </div>
-</div>
-
-<div class="method">
-  <span><b>OpenAlex</b> 250M papers</span>
-  <span><b>RegPat</b> 80M patents · 250k sub-tech classes</span>
-  <span><b>Crunchbase</b> capital flow</span>
-  <span><b>Lightcast</b> talent market</span>
-  <span class="sep">·</span>
-  <span>Method: relatedness density × complexity — Balland et al. (2019)</span>
 </div>
 
 <div class="uses">
@@ -215,12 +198,6 @@
       <div id="coList"></div>
     </div>
   </div>
-</div>
-
-<div class="footnote">
-  A8N Intelligence — illustrative demo. Coordinates, RCA and company shares are generated from a structural model for demonstration;
-  in production they are computed from the connected datasets above. Q1 = smart investment graph (relatedness density × complexity).
-  Q2 = ecosystem treemap, companies sized by patent share and coloured by Technological Revealed Comparative Advantage.
 </div>
 
 <div class="tooltip" id="tip"></div>
